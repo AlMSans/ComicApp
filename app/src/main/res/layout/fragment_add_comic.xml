@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etComicTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título del Cómic"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etComicAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Autor"
+        android:inputType="text" />
+
+    <!-- Campo de Localización -->
+    <EditText
+        android:id="@+id/etComicLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Localización"
+        android:inputType="text" />
+
+    <!-- Spinner de Estado -->
+    <Spinner
+        android:id="@+id/spinnerComicCondition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Spinner de Género -->
+    <Spinner
+        android:id="@+id/spinnerComicGenre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Campo de Precio -->
+    <EditText
+        android:id="@+id/etComicPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Precio"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subir Imagen" />
+
+    <ImageView
+        android:id="@+id/ivComicImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/hb2"
+        android:scaleType="centerCrop" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/btnSaveComic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar Cómic"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>

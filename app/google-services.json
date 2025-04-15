@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "906016846168",
+    "project_id": "proyectofinalcurso-86667",
+    "storage_bucket": "proyectofinalcurso-86667.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906016846168:android:01a153f28f9b04ad22352d",
+        "android_client_info": {
+          "package_name": "com.example.proyectofinalcurso"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906016846168-gr1t91h82468pn3vjtv4e8jk6ctb3ija.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVY5Nr7jk3ebSUpAqnM0ymS-XM6QXpmKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906016846168-gr1t91h82468pn3vjtv4e8jk6ctb3ija.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

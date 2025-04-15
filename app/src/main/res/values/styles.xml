@@ -1,0 +1,20 @@
+<resources>
+    <!-- Tema sin ActionBar -->
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Puedes agregar otros atributos si es necesario -->
+    </style>
+
+    <!-- Estilo para el BottomNavigationView -->
+    <style name="CustomBottomNavStyle">
+        <!-- Fondo de la barra de navegación -->
+        <item name="android:background">?android:attr/windowBackground</item>
+        <!-- Tamaño de los íconos -->
+        <item name="itemIconSize">24dp</item>
+        <!-- Color de los íconos cuando no están seleccionados -->
+        <item name="itemIconTint">@color/nav_icon_color</item>
+        <!-- Color de los íconos cuando están seleccionados -->
+        <item name="itemTextColor">@color/nav_text_color</item>
+    </style>
+
+
+</resources>
