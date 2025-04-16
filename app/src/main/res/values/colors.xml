@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!-- Colores personalizados -->
-
+    <color name="colorPrimary">#6200EE</color> <!-- Color morado claro -->
     <color name="nav_icon_color">#010E87</color> <!-- Gris para los íconos inactivos -->
     <color name="nav_text_color">#010E87</color> <!-- Gris para el texto inactivo -->
     <color name="colorAccent">#FF4081</color> <!-- Puedes personalizar este color -->
