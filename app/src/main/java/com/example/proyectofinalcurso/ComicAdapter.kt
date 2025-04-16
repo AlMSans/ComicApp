@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -33,6 +35,13 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         holder.conditionTextView.text = comic.condition
         holder.locationTextView.text = comic.location
 
+        // Cargar imagen desde la URL con Glide
+        Glide.with(holder.itemView.context)
+            .load(comic.imageUrl)  // Usar la URL de la imagen almacenada en el cómic
+            .placeholder(R.drawable.hb2)  // Imagen temporal mientras se carga
+            .error(R.drawable.hb3)  // Imagen en caso de error
+            .into(holder.comicImageView)
+
         // Hacer visible el botón de eliminar para todos los cómics
         holder.deleteButton.visibility = View.VISIBLE
 
@@ -54,19 +63,13 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         } else {
             holder.editButton.visibility = View.GONE
         }
-
-
     }
-
 
     // Redirige a la pantalla de edición del cómic
     private fun editComic(comic: Comic, context: Context) {
         val editComicFragment = EditFragment()
         val bundle = Bundle()
-
-
-         bundle.putParcelable("comic", comic)
-
+        bundle.putParcelable("comic", comic)
         editComicFragment.arguments = bundle
         // Reemplaza el fragmento actual con el de edición
         (context as AppCompatActivity).supportFragmentManager.beginTransaction()
@@ -104,9 +107,6 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         }
     }
 
-
-
-
     private fun deleteUserComic(comicId: String) {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
@@ -132,5 +132,6 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         val locationTextView: TextView = itemView.findViewById(R.id.textViewLocation)
         val deleteButton: Button = itemView.findViewById(R.id.btnDeleteComic)
         val editButton: Button = itemView.findViewById(R.id.btnEditComic)  // Botón de editar
+        val comicImageView: ImageView = itemView.findViewById(R.id.imageViewComic) // ImageView para la imagen del cómic
     }
 }
