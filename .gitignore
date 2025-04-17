@@ -1,15 +1,40 @@
+# Archivos de proyecto generados por Android Studio
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
+.idea/
+
+# Configuración local (como dispositivos conectados, historial, etc.)
 local.properties
+/.idea/
+
+# Archivos generados automáticamente por el sistema
+.DS_Store
+*.log
+
+# Carpetas de construcción (builds)
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Salida del wrapper de Gradle
+.gradle/
+wrapper/
+
+# Archivos temporales
+*.apk
+*.ap_
+*.dex
+
+# Caches de Android Studio
+.idea/caches/
+.idea/libraries/
+
+# Configuración personal que no debería compartirse
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+
+# Otras carpetas y archivos que no deben subirse
+node_modules/

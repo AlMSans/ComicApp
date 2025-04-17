@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="16dp"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/chat_item_background"
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Imagen del usuario (puedes agregar una imagen más tarde) -->
+    <!-- Imagen del usuario -->
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/userImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:src="@drawable/hb2"
-        android:layout_marginEnd="16dp"
-        android:layout_gravity="center_vertical" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Nombre del usuario con el que el usuario tiene el chat -->
+    <!-- Nombre del usuario -->
     <TextView
         android:id="@+id/chatUserName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="Nombre del Usuario"
         android:textSize="16sp"
-        android:layout_gravity="center_vertical" />
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toEndOf="@id/userImage"
+        app:layout_constraintEnd_toStartOf="@id/statusText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Indicador para mostrar si el chat está activo (puedes personalizarlo) -->
+    <!-- Estado del chat -->
     <TextView
+        android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Activo"
         android:textSize="14sp"
         android:textColor="@android:color/holo_green_dark"
-        android:layout_gravity="center_vertical" />
-</LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
