@@ -5,65 +5,88 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="50dp"
+    android:background="@drawable/bc3"
     tools:context=".SearchFragment">
 
-    <EditText
-        android:id="@+id/searchEditText"
+    <!-- Contenedor con sombra sin bordes redondeados -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/SearchCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Buscar por título o autor" />
+        android:layout_margin="8dp">
 
-    <Spinner
-        android:id="@+id/genreSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <Spinner
-        android:id="@+id/statusSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar por título o autor"
+                android:inputType="text" />
 
-    <TextView
-        android:id="@+id/priceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Máximo: €100" />
+            <Spinner
+                android:id="@+id/genreSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
-    <SeekBar
-        android:id="@+id/priceSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100" />
-    <EditText
-        android:id="@+id/locationEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ubicación"
-        android:inputType="text" />
+            <Spinner
+                android:id="@+id/statusSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
 
+            <TextView
+                android:id="@+id/priceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Máximo: €100"
+                android:layout_marginTop="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSearchResults"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+            <SeekBar
+                android:id="@+id/priceSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100" />
+
+            <EditText
+                android:id="@+id/locationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ubicación"
+                android:inputType="text"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Buscar"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSearchResults"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:layout_marginTop="16dp" />
+
     <TextView
         android:id="@+id/noResultsTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="No se encontraron cómics"
         android:textSize="16sp"
         android:textColor="@android:color/darker_gray"
+        android:gravity="center"
         android:visibility="gone"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:gravity="center" />
-
-
+        android:layout_marginTop="20dp" />
 </LinearLayout>

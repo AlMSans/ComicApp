@@ -7,6 +7,7 @@
     <color name="teal_700">#010E87</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#FFB900</color>
     <!-- Colores personalizados -->
     <color name="colorPrimary">#6200EE</color> <!-- Color morado claro -->
     <color name="nav_icon_color">#010E87</color> <!-- Gris para los íconos inactivos -->

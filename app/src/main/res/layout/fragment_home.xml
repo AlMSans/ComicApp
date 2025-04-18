@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="40dp"
+    android:padding="60dp"
     android:background="@drawable/bc3">
 
     <TextView
@@ -13,9 +13,11 @@
         android:text="CÓMICS DISPONIBLES"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="#FFFFFF"
+        android:background="#000000"
+        android:padding="8dp"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="8dp" />
+        android:layout_marginBottom="16dp" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

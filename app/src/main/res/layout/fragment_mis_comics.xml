@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="@drawable/bc3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +18,12 @@
             android:text="📚 Mis cómics"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:textColor="#FFFFFF"
+            android:background="#000000"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center_horizontal" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewMisComics"
@@ -42,7 +48,12 @@
             android:text="⭐ Favoritos"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:textColor="#FFFFFF"
+            android:background="#000000"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center_horizontal" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewFavoritos"

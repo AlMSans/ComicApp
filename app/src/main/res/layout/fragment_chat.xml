@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="40dp">
+    android:padding="40dp"
+    android:background="@drawable/bc3">
 
     <!-- Título de la sección de chat -->
     <TextView
@@ -11,8 +12,13 @@
         android:layout_height="wrap_content"
         android:text="Mis Chats"
         android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="#000000"
+        android:padding="8dp"
         android:layout_marginBottom="16dp"
-        android:textStyle="bold" />
+        android:layout_gravity="center_horizontal" />
+
 
     <!-- RecyclerView para la lista de chats -->
     <androidx.recyclerview.widget.RecyclerView
