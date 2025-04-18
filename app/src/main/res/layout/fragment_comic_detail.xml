@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="40dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:background="@drawable/bc3">
 
     <!-- Imagen del cómic -->
     <ImageView
@@ -15,66 +18,83 @@
         android:contentDescription="Imagen del cómic"
         android:layout_marginBottom="16dp" />
 
-    <!-- Título del cómic -->
-    <TextView
-        android:id="@+id/detailTitle"
-        android:layout_width="wrap_content"
+    <!-- Contenedor con sombra sin bordes redondeados -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profileCard"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Título"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        app:cardCornerRadius="0dp"
+        app:cardElevation="6dp"
+        android:layout_margin="8dp">
 
-    <!-- Autor del cómic -->
-    <TextView
-        android:id="@+id/detailAuthor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Autor"
-        android:layout_marginBottom="8dp" />
+        <!-- Contenido dentro del CardView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Género del cómic -->
-    <TextView
-        android:id="@+id/detailGenre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Género"
-        android:layout_marginBottom="8dp" />
+            <!-- Título del cómic -->
+            <TextView
+                android:id="@+id/detailTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Título"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
-    <!-- Ubicación del cómic -->
-    <TextView
-        android:id="@+id/detailLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ubicación"
-        android:layout_marginBottom="8dp" />
+            <!-- Autor del cómic -->
+            <TextView
+                android:id="@+id/detailAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Autor"
+                android:layout_marginBottom="8dp" />
 
-    <!-- Condición del cómic -->
-    <TextView
-        android:id="@+id/detailCondition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Condición"
-        android:layout_marginBottom="8dp" />
+            <!-- Género del cómic -->
+            <TextView
+                android:id="@+id/detailGenre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Género"
+                android:layout_marginBottom="8dp" />
 
-    <!-- Precio del cómic -->
-    <TextView
-        android:id="@+id/detailPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Precio"
-        android:textColor="@android:color/holo_green_dark"
-        android:layout_marginBottom="8dp" />
+            <!-- Ubicación del cómic -->
+            <TextView
+                android:id="@+id/detailLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ubicación"
+                android:layout_marginBottom="8dp" />
 
-    <!-- Nombre del usuario que subió el cómic -->
-    <TextView
-        android:id="@+id/detailUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombre del Usuario"
-        android:layout_marginBottom="8dp" />
+            <!-- Condición del cómic -->
+            <TextView
+                android:id="@+id/detailCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Condición"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Precio del cómic -->
+            <TextView
+                android:id="@+id/detailPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Precio"
+                android:textColor="@android:color/holo_green_dark"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Nombre del usuario que subió el cómic -->
+            <TextView
+                android:id="@+id/detailUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Usuario"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Botón para guardar como favorito -->
     <Button
@@ -91,6 +111,5 @@
         android:layout_height="wrap_content"
         android:text="Contactar con el propietario"
         android:layout_marginTop="16dp" />
-
 
 </LinearLayout>
