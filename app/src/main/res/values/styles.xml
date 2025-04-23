@@ -1,20 +1,37 @@
-<resources>
-    <!-- Tema sin ActionBar -->
-    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Puedes agregar otros atributos si es necesario -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Tema general basado en Material3 sin ActionBar -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Color de fondo general -->
+        <item name="android:windowBackground">@color/background</item>
+
+        <!-- Color de status bar y navegación -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+
+        <!-- Activar decoraciones modernas -->
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+
+        <!-- Personalizaciones globales -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/gray</item>
     </style>
 
-    <!-- Estilo para el BottomNavigationView -->
+    <!-- Tema sin ActionBar (si necesitas uno separado) -->
+    <style name="NoActionBarTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <!-- Estilo para BottomNavigationView -->
     <style name="CustomBottomNavStyle">
-        <!-- Fondo de la barra de navegación -->
-        <item name="android:background">?android:attr/windowBackground</item>
-        <!-- Tamaño de los íconos -->
+        <item name="android:background">@color/nav_background</item>
         <item name="itemIconSize">24dp</item>
-        <!-- Color de los íconos cuando no están seleccionados -->
-        <item name="itemIconTint">@color/nav_icon_color</item>
-        <!-- Color de los íconos cuando están seleccionados -->
-        <item name="itemTextColor">@color/nav_text_color</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
+        <item name="labelVisibilityMode">labeled</item>
     </style>
-
 
 </resources>

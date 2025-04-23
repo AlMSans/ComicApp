@@ -8,9 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFB900</color>
+    <color name="gray">#B0B0B0</color>
+
     <!-- Colores personalizados -->
     <color name="colorPrimary">#6200EE</color> <!-- Color morado claro -->
     <color name="nav_icon_color">#010E87</color> <!-- Gris para los íconos inactivos -->
     <color name="nav_text_color">#010E87</color> <!-- Gris para el texto inactivo -->
     <color name="colorAccent">#FF4081</color> <!-- Puedes personalizar este color -->
+    <color name="primary">#2575FC</color>
+    <color name="secondary">#6A11CB</color>
+    <color name="background">#121212</color>
+    <color name="nav_background">#1F1F1F</color>
 </resources>
