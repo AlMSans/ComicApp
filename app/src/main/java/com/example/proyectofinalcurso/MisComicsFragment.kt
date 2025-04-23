@@ -5,132 +5,91 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.proyectofinalcurso.databinding.FragmentMisComicsBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MisComicsFragment : Fragment() {
 
-    private lateinit var recyclerViewMisComics: RecyclerView
-    private lateinit var recyclerViewFavoritos: RecyclerView
+    private var _binding: FragmentMisComicsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var comicsAdapter: ComicAdapter
-    private lateinit var favoritosAdapter: ComicAdapter
-    private lateinit var db: FirebaseFirestore
+    private val db = FirebaseFirestore.getInstance()
+    private val currentUserId get() = FirebaseAuth.getInstance().currentUser?.uid
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_mis_comics, container, false)
+    ): View {
+        _binding = FragmentMisComicsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        db = FirebaseFirestore.getInstance()
-
-        recyclerViewMisComics = view.findViewById(R.id.recyclerViewMisComics)
-        recyclerViewFavoritos = view.findViewById(R.id.recyclerViewFavoritos)
-
-        recyclerViewMisComics.layoutManager = LinearLayoutManager(context)
-        recyclerViewFavoritos.layoutManager = LinearLayoutManager(context)
-
+        // RecyclerView
         comicsAdapter = ComicAdapter(mutableListOf(), isFavorites = false)
-        favoritosAdapter = ComicAdapter(mutableListOf(), isFavorites = true)
+        binding.recyclerViewMisComics.apply {
+            adapter = comicsAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
 
-        recyclerViewMisComics.adapter = comicsAdapter
-        recyclerViewFavoritos.adapter = favoritosAdapter
+        // Pull‑to‑refresh
+        binding.swipeMisComics.setOnRefreshListener { loadMyComics() }
 
-        loadComics()
+        loadMyComics()
 
-        val btnAddComic: Button = view.findViewById(R.id.btnAddComic)
-        btnAddComic.setOnClickListener {
-            goToAddComic()
+        // Botón “Agregar cómic”
+        binding.btnAddComic.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, AddComicFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
-    private fun loadComics() {
-        val user = FirebaseAuth.getInstance().currentUser
-
-        if (user != null) {
-            val userId = user.uid
-
-            db.collection("comics")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener { documents ->
-                    val comicsList = documents.map { document ->
-                        Comic(
-                            id = document.id,
-                            title = document.getString("title") ?: "Sin título",
-                            author = document.getString("author") ?: "Desconocido",
-                            imageUrl = document.getString("imageUrl") ?: "",
-                            genre = document.getString("genre") ?: "Desconocido",
-                            price = document.getDouble("price")?.toFloat() ?: 0f,  // Cambio aquí
-                            condition = document.getString("condition") ?: "Nuevo",
-                            location = document.getString("location") ?: "Desconocido",
-                            userId = document.getString("userId") ?: ""
-                        )
-                    }
-
-                    comicsAdapter.updateData(comicsList as MutableList<Comic>)
-
-                    loadFavoriteComics(userId)
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("MisComics", "Error al cargar cómics: ${exception.message}")
-                }
+    /** Descarga los cómics subidos por el usuario y actualiza el adapter */
+    private fun loadMyComics() {
+        val uid = currentUserId ?: run {
+            binding.swipeMisComics.isRefreshing = false
+            return
         }
-    }
 
-    private fun loadFavoriteComics(userId: String) {
-        db.collection("usuarios")
-            .document(userId)
-            .collection("favorites")
+        db.collection("comics")
+            .whereEqualTo("userId", uid)
             .get()
-            .addOnSuccessListener { documents ->
-                val tasks = documents.mapNotNull { document ->
-                    document.getString("comicId")?.let { comicId ->
-                        db.collection("comics").document(comicId).get()
-                    }
+            .addOnSuccessListener { docs ->
+                val myComics = docs.map { snap ->
+                    // Crea Comic con tu constructor habitual
+                    Comic(
+                        id = snap.id,
+                        title = snap.getString("title") ?: "Sin título",
+                        author = snap.getString("author") ?: "Desconocido",
+                        genre  = snap.getString("genre") ?: "Desconocido",
+                        price  = (snap.get("price") as? Number)?.toFloat() ?: 0f,
+                        condition = snap.getString("condition") ?: "N/A",
+                        location  = snap.getString("location") ?: "N/A",
+                        userId = snap.getString("userId") ?: "",
+                        imageUrl = snap.getString("imageUrl")
+                    )
                 }
-
-                // Esperar a que todas las tareas se completen
-                com.google.android.gms.tasks.Tasks.whenAllSuccess<com.google.firebase.firestore.DocumentSnapshot>(tasks)
-                    .addOnSuccessListener { results ->
-                        val favoriteComics = results.map { comicDocument ->
-                            Comic(
-                                id = comicDocument.id,
-                                title = comicDocument.getString("title") ?: "Sin título",
-                                author = comicDocument.getString("author") ?: "Desconocido",
-                                imageUrl = comicDocument.getString("imageUrl") ?: "",
-                                genre = comicDocument.getString("genre") ?: "Desconocido",
-                                price = comicDocument.getDouble("price")?.toFloat() ?: 0f,  // Cambio aquí
-                                condition = comicDocument.getString("condition") ?: "Nuevo",
-                                location = comicDocument.getString("location") ?: "Desconocido",
-                                userId = comicDocument.getString("userId") ?: ""
-                            )
-                        }
-
-                        favoritosAdapter.updateData(favoriteComics)
-                    }
-                    .addOnFailureListener {
-                        Log.e("MisComics", "Error al cargar cómics favoritos")
-                    }
+                comicsAdapter.updateData(myComics)
+                binding.swipeMisComics.isRefreshing = false
             }
-            .addOnFailureListener { exception ->
-                Log.e("MisComics", "Error al consultar favoritos: ${exception.message}")
+            .addOnFailureListener { e ->
+                Log.e("MisComics", "Error al cargar cómics", e)
+                binding.swipeMisComics.isRefreshing = false
             }
     }
 
-    private fun goToAddComic() {
-        val addComicFragment = AddComicFragment()
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, addComicFragment)
-            .addToBackStack(null)
-            .commit()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

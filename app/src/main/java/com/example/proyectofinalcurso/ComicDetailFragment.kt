@@ -100,14 +100,24 @@ class ComicDetailFragment : Fragment() {
         }
 
         val favoriteButton: Button = view.findViewById(R.id.favoriteButton)
-        favoriteButton.setOnClickListener {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            if (currentUser != null) {
-                val favoritesRef = FirebaseFirestore.getInstance()
-                    .collection("usuarios")
-                    .document(currentUser.uid)
-                    .collection("favorites")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val favoritesRef = FirebaseFirestore.getInstance()
+                .collection("usuarios")
+                .document(currentUser.uid)
+                .collection("favorites")
 
+            // Comprobar si el cómic ya está en favoritos
+            val comicId = arguments?.getString("id") ?: ""
+            favoritesRef.whereEqualTo("comicId", comicId).get().addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // El cómic ya está en favoritos, ocultamos el botón
+                    favoriteButton.visibility = View.GONE
+                }
+            }
+
+            // Acción al hacer clic en el botón de favoritos
+            favoriteButton.setOnClickListener {
                 val comicData = hashMapOf(
                     "comicId" to arguments?.getString("id"),
                     "title" to arguments?.getString("title"),
@@ -118,11 +128,12 @@ class ComicDetailFragment : Fragment() {
                     Toast.makeText(requireContext(), "Cómic guardado como favorito", Toast.LENGTH_SHORT).show()
                 }
             }
+        } else {
+            favoriteButton.visibility = View.GONE  // Si no hay usuario logueado, ocultar el botón
         }
 
         // Botón para contactar con el propietario del cómic
         val contactButton = view.findViewById<Button>(R.id.btnContactar)
-        val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser?.uid != userId) {
             contactButton.setOnClickListener {
                 val intent = Intent(requireContext(), ChatActivity::class.java)
