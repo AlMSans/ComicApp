@@ -3,30 +3,40 @@ package com.example.proyectofinalcurso
 import android.os.Parcel
 import android.os.Parcelable
 
+
 data class Comic(
-    val id: String,
-    val title: String,
-    val author: String,
-    val genre: String,
-    val price: Float,
-    val condition: String,
-    val location: String,
-    val userId: String,
-    var imageUrl: String?
+    val id: String = "",
+    val title: String = "",
+    val author: String = "",
+    val genre: String = "",
+    val price: Float = 0f,
+    val condition: String = "",
+    val location: String = "",
+    val userId: String = "",
+    var imageUrls: List<String> = emptyList(),
+
+    /** 👴🏻 Compatibilidad con documentos antiguos */
+    @Deprecated("Usa imageUrls", ReplaceWith("imageUrls"))
+    var imageUrl: String? = null
 ) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readFloat(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: null
+
+    /* ----  Parcelable  ---- */
+
+    private constructor(parcel: Parcel) : this(
+        id        = parcel.readString() ?: "",
+        title     = parcel.readString() ?: "",
+        author    = parcel.readString() ?: "",
+        genre     = parcel.readString() ?: "",
+        price     = parcel.readFloat(),
+        condition = parcel.readString() ?: "",
+        location  = parcel.readString() ?: "",
+        userId    = parcel.readString() ?: "",
+        imageUrls = mutableListOf<String>().apply {
+            parcel.readStringList(this)
+        },
+        imageUrl  = parcel.readString()
     )
 
-    // Métodos de Parcelable
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(title)
@@ -36,24 +46,14 @@ data class Comic(
         parcel.writeString(condition)
         parcel.writeString(location)
         parcel.writeString(userId)
+        parcel.writeStringList(imageUrls)
         parcel.writeString(imageUrl)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    override fun describeContents() = 0
 
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<Comic> = object : Parcelable.Creator<Comic> {
-            override fun createFromParcel(parcel: Parcel): Comic {
-                return Comic(parcel)
-            }
-
-            override fun newArray(size: Int): Array<Comic?> {
-                return arrayOfNulls(size)
-            }
-        }
+    companion object CREATOR : Parcelable.Creator<Comic> {
+        override fun createFromParcel(parcel: Parcel) = Comic(parcel)
+        override fun newArray(size: Int): Array<Comic?> = arrayOfNulls(size)
     }
 }
-

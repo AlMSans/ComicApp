@@ -3,147 +3,155 @@ package com.example.proyectofinalcurso
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.*
 
 class ComicDetailFragment : Fragment() {
 
-    private lateinit var comicImageView: ImageView
-
+    /* ---------- factory ---------- */
     companion object {
         fun newInstance(
-            id: String, title: String, author: String, genre: String,
-            location: String, condition: String, price: Float, imageUrl: String, userId: String
-        ): ComicDetailFragment {
-            val fragment = ComicDetailFragment()
-            val args = Bundle()
-            args.putString("id", id)
-            args.putString("title", title)
-            args.putString("author", author)
-            args.putString("genre", genre)
-            args.putString("location", location)
-            args.putString("condition", condition)
-            args.putFloat("price", price)
-            args.putString("imageUrl", imageUrl)
-            args.putString("userId", userId)
-            fragment.arguments = args
-            return fragment
+            id: String,
+            title: String,
+            author: String,
+            genre: String,
+            location: String,
+            condition: String,
+            price: Float,
+            imageUrls: ArrayList<String>,
+            userId: String
+        ): ComicDetailFragment = ComicDetailFragment().apply {
+            arguments = Bundle().apply {
+                putString("id", id)
+                putString("title", title)
+                putString("author", author)
+                putString("genre", genre)
+                putString("location", location)
+                putString("condition", condition)
+                putFloat("price", price)
+                putStringArrayList("imageUrls", imageUrls)
+                putString("userId", userId)
+            }
         }
     }
 
+    /* ---------- lifecycle ---------- */
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_comic_detail, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_comic_detail, container, false).apply {
 
-        // Obtener datos
-        val title = arguments?.getString("title") ?: "Sin título"
-        val author = arguments?.getString("author") ?: "Desconocido"
-        val genre = arguments?.getString("genre") ?: "Desconocido"
-        val location = arguments?.getString("location") ?: "Desconocida"
-        val condition = arguments?.getString("condition") ?: "Desconocido"
-        val price = arguments?.getFloat("price") ?: 0f
-        val imageUrl = arguments?.getString("imageUrl") ?: ""
-        val userId = arguments?.getString("userId") ?: ""
+        /* ----- UI refs ----- */
+        val titleTv: TextView       = findViewById(R.id.detailTitle)
+        val authorTv: TextView      = findViewById(R.id.detailAuthor)
+        val genreTv: TextView       = findViewById(R.id.detailGenre)
+        val locationTv: TextView    = findViewById(R.id.detailLocation)
+        val conditionTv: TextView   = findViewById(R.id.detailCondition)
+        val priceTv: TextView       = findViewById(R.id.detailPrice)
+        val userNameTv: TextView    = findViewById(R.id.detailUserName)
+        val favBtn: Button          = findViewById(R.id.favoriteButton)
+        val contactBtn: Button      = findViewById(R.id.btnContactar)
+        val pager: ViewPager2       = findViewById(R.id.viewPagerImages)
 
-        Log.d("ComicDetailFragment", "User ID al cargar el fragmento: $userId")
+        /* ----- argumentos ----- */
+        val args      = requireArguments()
+        val comicId   = args.getString("id") ?: ""
+        val userId    = args.getString("userId") ?: ""
+        val images    = args.getStringArrayList("imageUrls") ?: arrayListOf()
 
-        val titleView: TextView = view.findViewById(R.id.detailTitle)
-        val authorView: TextView = view.findViewById(R.id.detailAuthor)
-        val genreView: TextView = view.findViewById(R.id.detailGenre)
-        val locationView: TextView = view.findViewById(R.id.detailLocation)
-        val conditionView: TextView = view.findViewById(R.id.detailCondition)
-        val priceView: TextView = view.findViewById(R.id.detailPrice)
-        comicImageView = view.findViewById(R.id.detailImageView)
+        // retro‑compatibilidad: si images vacío pero hay imageUrl legacy
+        args.getString("imageUrl")?.let { if (images.isEmpty()) images.add(it) }
 
-        titleView.text = title
-        authorView.text = "Autor: $author"
-        genreView.text = "Género: $genre"
-        locationView.text = "Ubicación: $location"
-        conditionView.text = "Estado: $condition"
-        priceView.text = "Precio: €$price"
+        /* ----- set texts ----- */
+        titleTv.text     = args.getString("title")
+        authorTv.text    = "Autor: ${args.getString("author")}"
+        genreTv.text     = "Género: ${args.getString("genre")}"
+        locationTv.text  = "Ubicación: ${args.getString("location")}"
+        conditionTv.text = "Estado: ${args.getString("condition")}"
+        priceTv.text     = "Precio: €${args.getFloat("price")}"
 
-        Glide.with(requireContext())
-            .load(imageUrl)
-            .placeholder(R.drawable.hb2)
-            .error(R.drawable.hb3)
-            .into(comicImageView)
+        /* ----- ViewPager imágenes ----- */
+        pager.adapter = ImagePagerAdapter(images)
 
-        // Cargar el nombre del usuario
+
+        /* ----- cargar nombre del vendedor ----- */
         if (userId.isNotEmpty()) {
-            val userRef = FirebaseFirestore.getInstance().collection("usuarios").document(userId)
-
-            userRef.get().addOnSuccessListener { document ->
-                val userName = document.getString("nombre") ?: "Desconocido"
-                Log.d("ComicDetailFragment", "Usuario encontrado: $userName")
-
-                activity?.runOnUiThread {
-                    view.findViewById<TextView>(R.id.detailUserName).text = "Nombre: $userName"
+            FirebaseFirestore.getInstance()
+                .collection("usuarios").document(userId)
+                .get()
+                .addOnSuccessListener {
+                    userNameTv.text = "Nombre: ${it.getString("nombre") ?: "Desconocido"}"
                 }
-            }.addOnFailureListener { exception ->
-                Log.e("ComicDetailFragment", "Error al cargar los datos del usuario", exception)
-                Toast.makeText(requireContext(), "Error al cargar el nombre del usuario", Toast.LENGTH_SHORT).show()
-                activity?.runOnUiThread {
-                    view.findViewById<TextView>(R.id.detailUserName).text = "Usuario no disponible"
-                }
-            }
         }
 
-        val favoriteButton: Button = view.findViewById(R.id.favoriteButton)
+        /* ----- favoritos ----- */
         val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
-            val favoritesRef = FirebaseFirestore.getInstance()
-                .collection("usuarios")
-                .document(currentUser.uid)
+        if (currentUser == null) favBtn.visibility = View.GONE else {
+            val favRef = FirebaseFirestore.getInstance()
+                .collection("usuarios").document(currentUser.uid)
                 .collection("favorites")
 
-            // Comprobar si el cómic ya está en favoritos
-            val comicId = arguments?.getString("id") ?: ""
-            favoritesRef.whereEqualTo("comicId", comicId).get().addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    // El cómic ya está en favoritos, ocultamos el botón
-                    favoriteButton.visibility = View.GONE
-                }
+            // si ya es favorito, oculta botón
+            favRef.whereEqualTo("comicId", comicId).get().addOnSuccessListener {
+                if (!it.isEmpty) favBtn.visibility = View.GONE
             }
 
-            // Acción al hacer clic en el botón de favoritos
-            favoriteButton.setOnClickListener {
-                val comicData = hashMapOf(
-                    "comicId" to arguments?.getString("id"),
-                    "title" to arguments?.getString("title"),
-                    "imageUrl" to arguments?.getString("imageUrl")
-                )
-
-                favoritesRef.add(comicData).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Cómic guardado como favorito", Toast.LENGTH_SHORT).show()
+            favBtn.setOnClickListener {
+                favRef.add(
+                    mapOf(
+                        "comicId"  to comicId,
+                        "title"    to args.getString("title"),
+                        "imageUrl" to images.firstOrNull()      // para card favorito
+                    )
+                ).addOnSuccessListener {
+                    Toast.makeText(context, "Cómic guardado como favorito", Toast.LENGTH_SHORT).show()
+                    favBtn.visibility = View.GONE
                 }
             }
-        } else {
-            favoriteButton.visibility = View.GONE  // Si no hay usuario logueado, ocultar el botón
         }
 
-        // Botón para contactar con el propietario del cómic
-        val contactButton = view.findViewById<Button>(R.id.btnContactar)
+        /* ----- contactar propietario ----- */
         if (currentUser?.uid != userId) {
-            contactButton.setOnClickListener {
-                val intent = Intent(requireContext(), ChatActivity::class.java)
-                intent.putExtra("receiverId", userId)
-                startActivity(intent)
+            contactBtn.setOnClickListener {
+                startActivity(Intent(requireContext(), ChatActivity::class.java)
+                    .putExtra("receiverId", userId))
             }
-        } else {
-            contactButton.visibility = View.GONE
-        }
+        } else contactBtn.visibility = View.GONE
+    }
 
-        return view
+    /* ---------- pager adapter ---------- */
+
+    private inner class ImagePagerAdapter(private val urls: List<String>) :
+        RecyclerView.Adapter<ImagePagerAdapter.ImageVH>() {
+
+        inner class ImageVH(val iv: ImageView) : RecyclerView.ViewHolder(iv)
+
+        override fun onCreateViewHolder(p: ViewGroup, vType: Int) =
+            ImageVH(ImageView(p.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                scaleType = ImageView.ScaleType.CENTER_CROP
+            })
+
+        override fun getItemCount() = urls.size
+
+        override fun onBindViewHolder(h: ImageVH, pos: Int) {
+            Glide.with(h.iv.context)
+                .load(urls[pos])
+                .placeholder(R.drawable.hb2)
+                .error(R.drawable.hb3)
+                .into(h.iv)
+        }
     }
 }

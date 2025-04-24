@@ -31,14 +31,16 @@ class AddComicFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var db: FirebaseFirestore
-    private var comicImageUri: Uri? = null
+    private var comicImageUris: MutableList<Uri> = mutableListOf()
 
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            comicImageUri = uri
-            ivComicImage.setImageURI(uri)
+    private val pickImagesLauncher = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris != null && uris.isNotEmpty()) {
+            comicImageUris.clear() // Limpiar la lista antes de añadir las nuevas imágenes
+            comicImageUris.addAll(uris)
+            // Mostrar la primera imagen seleccionada en el ImageView (puedes cambiar esto para mostrar todas las imágenes)
+            ivComicImage.setImageURI(comicImageUris[0])
         } else {
-            Toast.makeText(requireContext(), "No se seleccionó ninguna imagen", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "No se seleccionaron imágenes", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -70,7 +72,7 @@ class AddComicFragment : Fragment() {
         setupSpinners()
 
         btnUploadImage.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            pickImagesLauncher.launch("image/*")
         }
 
         btnSaveComic.setOnClickListener {
@@ -113,13 +115,11 @@ class AddComicFragment : Fragment() {
 
         progressBar.visibility = View.VISIBLE
 
-        if (comicImageUri != null) {
-            try {
-                val inputStream = requireActivity().contentResolver.openInputStream(comicImageUri!!)
-                if (inputStream == null) {
-                    throw Exception("No se pudo abrir el InputStream de la URI.")
-                }
+        if (comicImageUris.isNotEmpty()) {
+            val imageUrls = mutableListOf<String>()
+            var imagesUploaded = 0
 
+            for (uri in comicImageUris) {
                 val fileName = "comic_${UUID.randomUUID()}.jpg"
                 val storageRef = storage.reference.child("comics/$fileName")
 
@@ -127,44 +127,48 @@ class AddComicFragment : Fragment() {
                     .setContentType("image/jpeg")
                     .build()
 
-                val imageData = inputStream.readBytes()
-                inputStream.close()
+                val inputStream = requireActivity().contentResolver.openInputStream(uri)
 
-                Log.d("UploadDebug", "Subiendo imagen como byte array: URI=$comicImageUri")
+                inputStream?.let {
+                    val imageData = it.readBytes()
+                    it.close()
 
-                storageRef.putBytes(imageData, metadata)
-                    .continueWithTask { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let { throw it }
+                    storageRef.putBytes(imageData, metadata)
+                        .continueWithTask { task ->
+                            if (!task.isSuccessful) {
+                                task.exception?.let { throw it }
+                            }
+                            storageRef.downloadUrl
                         }
-                        storageRef.downloadUrl
-                    }
-                    .addOnSuccessListener { uri ->
-                        val comicData = mapOf(
-                            "title" to title,
-                            "author" to author,
-                            "location" to location,
-                            "condition" to condition,
-                            "price" to price,
-                            "genre" to genre,
-                            "imageUrl" to uri.toString(),
-                            "userId" to userId,
-                            "createdAt" to com.google.firebase.Timestamp.now()
-                        )
-                        saveComicDataToFirestore(comicData)
-                    }
-                    .addOnFailureListener { e ->
-                        progressBar.visibility = View.GONE
-                        Log.e("AddComicFragment", "Error al subir la imagen desde bytes", e)
-                        Toast.makeText(requireContext(), "Error al subir imagen: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                        .addOnSuccessListener { downloadUri ->
+                            imageUrls.add(downloadUri.toString())
+                            imagesUploaded++
 
-            } catch (e: Exception) {
-                progressBar.visibility = View.GONE
-                Log.e("AddComicFragment", "No se pudo acceder a la imagen", e)
-                Toast.makeText(requireContext(), "No se pudo acceder a la imagen seleccionada", Toast.LENGTH_SHORT).show()
+                            if (imagesUploaded == comicImageUris.size) {
+                                val comicData = mapOf(
+                                    "title" to title,
+                                    "author" to author,
+                                    "location" to location,
+                                    "condition" to condition,
+                                    "price" to price,
+                                    "genre" to genre,
+                                    "imageUrls" to imageUrls,
+                                    "userId" to userId,
+                                    "createdAt" to com.google.firebase.Timestamp.now()
+                                )
+                                saveComicDataToFirestore(comicData)
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            progressBar.visibility = View.GONE
+                            Log.e("AddComicFragment", "Error al subir la imagen", e)
+                            Toast.makeText(requireContext(), "Error al subir imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } ?: run {
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "No se pudo acceder a la imagen seleccionada", Toast.LENGTH_SHORT).show()
+                }
             }
-
         } else {
             val comicData = mapOf(
                 "title" to title,
@@ -180,8 +184,6 @@ class AddComicFragment : Fragment() {
         }
     }
 
-
-
     private fun saveComicDataToFirestore(comicData: Map<String, Any>) {
         db.collection("comics")
             .add(comicData)
@@ -193,10 +195,4 @@ class AddComicFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error al guardar el cómic: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
-
-    companion object {
-        private const val IMAGE_PICK_CODE = 1000
-    }
-
 }

@@ -33,7 +33,7 @@ class EditFragment : Fragment() {
     private val user = FirebaseAuth.getInstance().currentUser
 
     private val PICK_IMAGE_REQUEST = 71
-    private var imageUri: Uri? = null
+    private var imageUris: MutableList<Uri> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +63,7 @@ class EditFragment : Fragment() {
         etLocation.setText(comic.location)
         etPrice.setText(comic.price.toString())
 
-        // Usar Glide para cargar la imagen del cómic
+        // Usar Glide para cargar la primera imagen del cómic
         Glide.with(this)
             .load(comic.imageUrl) // Si el cómic tiene una URL de imagen, la carga
             .into(ivComicImage)
@@ -97,20 +97,39 @@ class EditFragment : Fragment() {
         return view
     }
 
-    // Método para abrir el selector de imágenes
+    // Método para abrir el selector de imágenes para permitir selección múltiple
     private fun openImageChooser() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)  // Permitir selección múltiple
         startActivityForResult(intent, PICK_IMAGE_REQUEST)
     }
 
-    // Manejar el resultado de la selección de la imagen
+    // Manejar el resultado de la selección de imágenes
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
-            data?.data?.let { uri ->
-                imageUri = uri // Guardamos el URI de la imagen
-                ivComicImage.setImageURI(uri) // Mostrar la imagen seleccionada
+            imageUris.clear() // Limpiar lista previa de imágenes seleccionadas
+
+            data?.let {
+                if (it.clipData != null) {
+                    // Seleccionaron múltiples imágenes
+                    val count = it.clipData!!.itemCount
+                    for (i in 0 until count) {
+                        val imageUri = it.clipData!!.getItemAt(i).uri
+                        imageUris.add(imageUri)
+                    }
+                } else {
+                    // Solo seleccionaron una imagen
+                    it.data?.let { uri ->
+                        imageUris.add(uri)
+                    }
+                }
+            }
+
+            // Si hay imágenes seleccionadas, mostrar la primera (o una miniatura)
+            if (imageUris.isNotEmpty()) {
+                ivComicImage.setImageURI(imageUris[0])
             }
         }
     }
@@ -138,23 +157,35 @@ class EditFragment : Fragment() {
             condition = condition,
             location = location,
             userId = user?.uid ?: "",
-            imageUrl = imageUri?.toString() ?: comic.imageUrl
+            imageUrls = imageUris.map { it.toString() } // Convertir las URIs en Strings
         )
 
-        imageUri?.let { uri ->
-            val storageRef = storage.reference.child("comic_images/${UUID.randomUUID()}.jpg")
-            storageRef.putFile(uri)
-                .addOnSuccessListener {
-                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                        updatedComic.imageUrl = downloadUri.toString()
-                        saveComicToFirestore(updatedComic)
-                    }
-                }
-        } ?: saveComicToFirestore(updatedComic)
+        if (imageUris.isNotEmpty()) {
+            uploadImagesToFirebase(updatedComic)
+        } else {
+            saveComicToFirestore(updatedComic)
+        }
     }
 
+    // Subir múltiples imágenes a Firebase Storage
+    private fun uploadImagesToFirebase(comic: Comic) {
+        val imageUrls = mutableListOf<String>()
+        val storageRef = storage.reference
 
-
+        imageUris.forEachIndexed { index, uri ->
+            val imageRef = storageRef.child("comic_images/${UUID.randomUUID()}.jpg")
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        imageUrls.add(downloadUri.toString())
+                        if (imageUrls.size == imageUris.size) {
+                            comic.imageUrls = imageUrls // Asignar las URLs de todas las imágenes al cómic
+                            saveComicToFirestore(comic)
+                        }
+                    }
+                }
+        }
+    }
 
     // Guardar el cómic actualizado en Firestore
     private fun saveComicToFirestore(comic: Comic) {

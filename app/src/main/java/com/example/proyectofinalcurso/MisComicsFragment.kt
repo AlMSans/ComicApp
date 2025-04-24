@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyectofinalcurso.databinding.FragmentMisComicsBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MisComicsFragment : Fragment() {
@@ -40,14 +39,14 @@ class MisComicsFragment : Fragment() {
             setHasFixedSize(true)
         }
 
-        // Pull‑to‑refresh
+        // Pull-to-refresh
         binding.swipeMisComics.setOnRefreshListener { loadMyComics() }
 
         loadMyComics()
 
         // Botón “Agregar cómic”
         binding.btnAddComic.setOnClickListener {
-            parentFragmentManager.beginTransaction()
+            requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, AddComicFragment())
                 .addToBackStack(null)
                 .commit()
@@ -66,7 +65,8 @@ class MisComicsFragment : Fragment() {
             .get()
             .addOnSuccessListener { docs ->
                 val myComics = docs.map { snap ->
-                    // Crea Comic con tu constructor habitual
+                    val imageUrls = (snap.get("imageUrls") as? List<String>) ?: emptyList()
+
                     Comic(
                         id = snap.id,
                         title = snap.getString("title") ?: "Sin título",
@@ -76,7 +76,8 @@ class MisComicsFragment : Fragment() {
                         condition = snap.getString("condition") ?: "N/A",
                         location  = snap.getString("location") ?: "N/A",
                         userId = snap.getString("userId") ?: "",
-                        imageUrl = snap.getString("imageUrl")
+                        imageUrl = snap.getString("imageUrl"),
+                        imageUrls = imageUrls
                     )
                 }
                 comicsAdapter.updateData(myComics)

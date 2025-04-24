@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.proyectofinalcurso.data.toComic      // ← importa la extensión
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
@@ -24,101 +25,79 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
+    ): View = inflater.inflate(R.layout.fragment_home, container, false).apply {
 
         auth = FirebaseAuth.getInstance()
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
 
-        recyclerView = view.findViewById(R.id.recyclerViewComics)
+        recyclerView = findViewById(R.id.recyclerViewComics)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        comicsAdapter = ListUsuComics(emptyList()) { comic ->
-            abrirDetallesComic(comic)
-        }
-
+        comicsAdapter = ListUsuComics(emptyList()) { comic -> abrirDetallesComic(comic) }
         recyclerView.adapter = comicsAdapter
 
         swipeRefreshLayout.setOnRefreshListener {
-            lastDocumentSnapshot = null // Reset paginación
+            lastDocumentSnapshot = null
             loadComics()
         }
 
         configureFirestoreCache()
         loadComics()
-
-        return view
     }
 
     private fun configureFirestoreCache() {
         db.firestoreSettings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(true) // Habilita caché local
+            .setPersistenceEnabled(true)
             .build()
     }
 
     private fun loadComics() {
-        val userId = auth.currentUser?.uid
-
-        if (userId == null) {
+        val userId = auth.currentUser?.uid ?: run {
             Log.e("HomeFragment", "Usuario no autenticado")
             return
         }
 
-        var query = db.collection("comics")
+        var query: Query = db.collection("comics")
             .whereNotEqualTo("userId", userId)
             .limit(10)
 
-        if (lastDocumentSnapshot != null) {
-            query = query.startAfter(lastDocumentSnapshot!!)
-        }
+        lastDocumentSnapshot?.let { query = query.startAfter(it) }
 
-        query.get(Source.CACHE) // Prioriza caché
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    lastDocumentSnapshot = documents.documents.last()
+        query.get(Source.CACHE)
+            .addOnSuccessListener { docs ->
+                if (docs.isEmpty) {
+                    comicsAdapter.updateData(emptyList())
+                    swipeRefreshLayout.isRefreshing = false
+                    return@addOnSuccessListener
                 }
 
-                val comicsList = documents.map { document ->
-
-                    val price = when (val priceValue = document.get("price")) {
-                        is Number -> priceValue.toFloat()
-                        is String -> priceValue.toFloatOrNull() ?: 0f
-                        else -> 0f
-                    }
-
-                    Comic(
-                        id = document.id,
-                        title = document.getString("title") ?: "Sin título",
-                        author = document.getString("author") ?: "Desconocido",
-                        imageUrl = document.getString("imageUrl") ?: "",
-                        location = document.getString("location") ?: "Desconocida",
-                        condition = document.getString("condition") ?: "Desconocido",
-                        price = price,
-                        genre = document.getString("genre") ?: "Desconocido",
-                        userId = document.getString("userId") ?: ""
-                    )
-                }
-
-                comicsAdapter.updateData(comicsList)
+                lastDocumentSnapshot = docs.documents.last()
+                comicsAdapter.updateData(docs.map { it.toComic() })
                 swipeRefreshLayout.isRefreshing = false
             }
-            .addOnFailureListener { exception ->
-                Log.e("HomeFragment", "Error al cargar cómics: ${exception.message}")
+            .addOnFailureListener {
+                Log.e("HomeFragment", "Error al cargar cómics", it)
                 swipeRefreshLayout.isRefreshing = false
             }
     }
 
     private fun abrirDetallesComic(comic: Comic) {
+
+        // Creamos la lista de imágenes (puede tener 1 o varias)
+        val urls = ArrayList(comic.imageUrls)          // field nuevo
+        if (urls.isEmpty() && comic.imageUrl != null)  // compat. con modelo viejo
+            urls.add(comic.imageUrl)
+
         val fragment = ComicDetailFragment.newInstance(
-            id = comic.id,
-            title = comic.title,
-            author = comic.author,
-            genre = comic.genre,
-            location = comic.location,
+            id        = comic.id,
+            title     = comic.title,
+            author    = comic.author,
+            genre     = comic.genre,
+            location  = comic.location,
             condition = comic.condition,
-            price = comic.price,
-            imageUrl = comic.imageUrl ?: "",
-            userId = comic.userId
+            price     = comic.price,
+            imageUrls = urls,          //  ←  ahora enviamos la lista
+            userId    = comic.userId
         )
 
         requireActivity().supportFragmentManager.beginTransaction()
@@ -126,4 +105,5 @@ class HomeFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
+
 }

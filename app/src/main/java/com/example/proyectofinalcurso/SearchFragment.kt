@@ -1,16 +1,14 @@
 package com.example.proyectofinalcurso
 
 import android.os.Bundle
-import com.google.firebase.auth.FirebaseAuth
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.example.proyectofinalcurso.data.toComic       // mapper
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.*
 
 class SearchFragment : Fragment() {
 
@@ -24,63 +22,52 @@ class SearchFragment : Fragment() {
     private lateinit var locationEditText: EditText
     private lateinit var noResultsTextView: TextView
     private lateinit var btnSearch: Button
-    private lateinit var auth: FirebaseAuth
-    private val db = FirebaseFirestore.getInstance()
+    private val db   = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.fragment_search, container, false)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View = inflater.inflate(R.layout.fragment_search, container, false).apply {
 
-        searchEditText = view.findViewById(R.id.searchEditText)
-        genreSpinner = view.findViewById(R.id.genreSpinner)
-        statusSpinner = view.findViewById(R.id.statusSpinner)
-        priceSeekBar = view.findViewById(R.id.priceSeekBar)
-        priceTextView = view.findViewById(R.id.priceTextView)
-        locationEditText = view.findViewById(R.id.locationEditText)
-        noResultsTextView = view.findViewById(R.id.noResultsTextView)
-        btnSearch = view.findViewById(R.id.btnSearch)
-        recyclerView = view.findViewById(R.id.recyclerViewSearchResults)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        searchEditText     = findViewById(R.id.searchEditText)
+        genreSpinner       = findViewById(R.id.genreSpinner)
+        statusSpinner      = findViewById(R.id.statusSpinner)
+        priceSeekBar       = findViewById(R.id.priceSeekBar)
+        priceTextView      = findViewById(R.id.priceTextView)
+        locationEditText   = findViewById(R.id.locationEditText)
+        noResultsTextView  = findViewById(R.id.noResultsTextView)
+        btnSearch          = findViewById(R.id.btnSearch)
 
-        auth = FirebaseAuth.getInstance()
+        recyclerView = findViewById(R.id.recyclerViewSearchResults)
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         setupSpinners()
         setupPriceSeekBar()
 
-        // Configurar el clic en los cómics
-        val onComicClick: (Comic) -> Unit = { comic ->
-            val fragment = ComicDetailFragment.newInstance(
-                comic.id,
-                comic.title,
-                comic.author,
-                comic.genre,
-                comic.location,
-                comic.condition,
-                comic.price,
-                comic.imageUrl ?: "", // Si imageUrl es null, se pasa un string vacío
-                comic.userId
-            )
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment)  // Ajusta el contenedor de acuerdo a tu estructura
-                .addToBackStack(null)
-                .commit()
-        }
-
-
-
-
-        // Inicializar el adaptador con el clic
-        comicsAdapter = ListUsuComics(emptyList(), onComicClick)
+        comicsAdapter = ListUsuComics(emptyList()) { abrirDetallesComic(it) }
         recyclerView.adapter = comicsAdapter
 
-        btnSearch.setOnClickListener {
-            applyFilters()
-        }
-
-        return view
+        btnSearch.setOnClickListener { applyFilters() }
     }
+
+    /* ---------- abrir detalle ---------- */
+
+    private fun abrirDetallesComic(comic: Comic) {
+        val urls = ArrayList(comic.imageUrls)
+        comic.imageUrl?.let { if (urls.isEmpty()) urls.add(it) }  // compat.
+
+        val fragment = ComicDetailFragment.newInstance(
+            comic.id, comic.title, comic.author, comic.genre,
+            comic.location, comic.condition, comic.price, urls, comic.userId
+        )
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    /* ---------- filtros UI  ---------- */
 
     private fun setupSpinners() {
         val genres = arrayOf("Selecciona Género", "Acción", "Aventura", "Ciencia Ficción", "Fantasía", "Terror", "Superheroes", "Policiaco")
@@ -108,16 +95,18 @@ class SearchFragment : Fragment() {
         })
     }
 
+    /* ---------- aplicar filtros ---------- */
 
     private fun applyFilters() {
-        val searchText = searchEditText.text.toString().trim()
-        val selectedGenre = genreSpinner.selectedItem.toString()
-        val selectedStatus = statusSpinner.selectedItem.toString()
-        val maxPrice = priceSeekBar.progress
-        val location = locationEditText.text.toString().trim()
+        val searchText     = searchEditText.text.toString().trim()
 
-        // Obtener el UID del usuario actual
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        // Asegurarse de que el valor no sea nulo o vacío antes de llamar a toString()
+        val selectedGenre  = genreSpinner.selectedItem?.toString() ?: "Selecciona Género"
+        val selectedStatus = statusSpinner.selectedItem?.toString() ?: "Selecciona Estado"
+
+        val maxPrice       = priceSeekBar.progress
+        val location       = locationEditText.text.toString().trim()
+        val currentUserId  = auth.currentUser?.uid
 
         var query: Query = db.collection("comics")
 
@@ -126,66 +115,22 @@ class SearchFragment : Fragment() {
                 .whereLessThanOrEqualTo("title", searchText + "\uf8ff")
         }
 
-        // Verificar si no se seleccionó el título, y aplicar el filtro solo si se seleccionó una opción distinta
-        if (selectedGenre != "Selecciona Género") {
-            query = query.whereEqualTo("genre", selectedGenre)
-        }
+        // Aplicar filtros solo si los valores seleccionados son distintos de los predeterminados
+        if (selectedGenre != "Selecciona Género") query = query.whereEqualTo("genre", selectedGenre)
+        if (selectedStatus != "Selecciona Estado") query = query.whereEqualTo("condition", selectedStatus)
+        if (location.isNotEmpty())                 query = query.whereEqualTo("location", location)
 
-        if (selectedStatus != "Selecciona Estado") {
-            query = query.whereEqualTo("condition", selectedStatus)
-        }
+        currentUserId?.let { query = query.whereNotEqualTo("userId", it) }
 
-        if (location.isNotEmpty()) {
-            query = query.whereEqualTo("location", location)
-        }
-
-        // Excluir los cómics del propio usuario
-        if (currentUserId != null) {
-            query = query.whereNotEqualTo("userId", currentUserId)
-        }
-
-        query.get().addOnSuccessListener { documents ->
-            val filteredComics = documents.mapNotNull { document ->
-                // Obtener el precio como número (Number)
-                val priceValue = document.get("price") as? Number
-
-                // Si priceValue es un número, lo convertimos a Float
-                val price = priceValue?.toFloat() ?: 0f
-
-                // Filtrar cómics según el precio máximo del SeekBar
-                if (price <= maxPrice) {
-                    Comic(
-                        id = document.id,
-                        title = document.getString("title") ?: "Sin título",
-                        author = document.getString("author") ?: "Desconocido",
-                        genre = document.getString("genre") ?: "Desconocido",
-                        condition = document.getString("condition") ?: "Desconocido",
-                        price = price,  // Guardamos el precio como Float
-                        location = document.getString("location") ?: "Desconocido",
-                        imageUrl = document.getString("imageUrl") ?: "",
-                        userId = document.getString("userId") ?: ""  // Aquí agregamos el userId
-                    )
-                } else {
-                    null  // Si el precio es mayor que el valor del SeekBar, no se incluye el cómic
-                }
+        query.get().addOnSuccessListener { docs ->
+            val comics = docs.mapNotNull { snap ->
+                val comic = snap.toComic()
+                if (comic.price <= maxPrice) comic else null
             }
 
-            // Actualizar la lista de cómics en el adaptador
-            comicsAdapter.updateData(filteredComics)
-
-            // Si no hay resultados, muestra el mensaje
-            if (filteredComics.isEmpty()) {
-                noResultsTextView.visibility = View.VISIBLE
-            } else {
-                noResultsTextView.visibility = View.GONE
-            }
+            comicsAdapter.updateData(comics)
+            noResultsTextView.visibility = if (comics.isEmpty()) View.VISIBLE else View.GONE
         }
-
     }
 
-
-
-
 }
-
-

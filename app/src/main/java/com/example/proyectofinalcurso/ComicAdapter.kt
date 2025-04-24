@@ -35,43 +35,41 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         holder.conditionTextView.text = comic.condition
         holder.locationTextView.text = comic.location
 
-        // Cargar imagen desde la URL con Glide
+        // Elegimos la primera imagen disponible (lista nueva o campo legacy)
+        val thumbUrl = comic.imageUrls.firstOrNull() ?: comic.imageUrl
+
         Glide.with(holder.itemView.context)
-            .load(comic.imageUrl)  // Usar la URL de la imagen almacenada en el cómic
-            .placeholder(R.drawable.hb2)  // Imagen temporal mientras se carga
-            .error(R.drawable.hb3)  // Imagen en caso de error
+            .load(thumbUrl)
+            .placeholder(R.drawable.hb2)
+            .error(R.drawable.hb3)
             .into(holder.comicImageView)
 
-        // Hacer visible el botón de eliminar para todos los cómics
+        // Hacer visible el botón de eliminar siempre
         holder.deleteButton.visibility = View.VISIBLE
-
-        // Configurar el click del botón de eliminar
         holder.deleteButton.setOnClickListener {
             if (isFavorites) {
-                deleteFavoriteComic(comic.id)  // Eliminar del listado de favoritos
+                deleteFavoriteComic(comic.id)
             } else {
-                deleteUserComic(comic.id)  // Eliminar del listado de cómics del usuario
+                deleteUserComic(comic.id)
             }
         }
 
-        // Hacer visible el botón de editar solo en Mis Cómics (no en favoritos)
+        // Hacer visible el botón de editar solo si no es favoritos
         if (!isFavorites) {
             holder.editButton.visibility = View.VISIBLE
             holder.editButton.setOnClickListener {
-                editComic(comic, holder.itemView.context) // Pasar el contexto a editComic
+                editComic(comic, holder.itemView.context)
             }
         } else {
             holder.editButton.visibility = View.GONE
         }
     }
 
-    // Redirige a la pantalla de edición del cómic
     private fun editComic(comic: Comic, context: Context) {
         val editComicFragment = EditFragment()
         val bundle = Bundle()
         bundle.putParcelable("comic", comic)
         editComicFragment.arguments = bundle
-        // Reemplaza el fragmento actual con el de edición
         (context as AppCompatActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, editComicFragment)
             .addToBackStack(null)
@@ -80,7 +78,6 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
 
     override fun getItemCount(): Int = comicsList.size
 
-    // Actualizar la lista de cómics
     fun updateData(newComicsList: List<Comic>) {
         comicsList = newComicsList.toMutableList()
         notifyDataSetChanged()
@@ -118,7 +115,7 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
                     notifyDataSetChanged()
                 }
                 .addOnFailureListener {
-                    // Manejo de error al eliminar
+                    Log.e("MisComics", "Error al eliminar cómic", it)
                 }
         }
     }
@@ -131,7 +128,7 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         val conditionTextView: TextView = itemView.findViewById(R.id.textViewCondition)
         val locationTextView: TextView = itemView.findViewById(R.id.textViewLocation)
         val deleteButton: Button = itemView.findViewById(R.id.btnDeleteComic)
-        val editButton: Button = itemView.findViewById(R.id.btnEditComic)  // Botón de editar
-        val comicImageView: ImageView = itemView.findViewById(R.id.imageViewComic) // ImageView para la imagen del cómic
+        val editButton: Button = itemView.findViewById(R.id.btnEditComic)
+        val comicImageView: ImageView = itemView.findViewById(R.id.imageViewComic)
     }
 }
