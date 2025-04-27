@@ -78,7 +78,9 @@ class ChatFragment : Fragment() {
         for (uid in userIds) {
             db.collection("usuarios").document(uid).get().addOnSuccessListener { document ->
                 val name = document.getString("nombre") ?: "Usuario desconocido"
-                chatUsers.add(ChatUser(uid, name))
+                val profileImageUrl = document.getString("profileImageUrl") // Obtener URL de la imagen
+
+                chatUsers.add(ChatUser(uid, name, profileImageUrl)) // Añadir la imagen a ChatUser
                 loadedCount++
 
                 if (loadedCount == userIds.size) {
@@ -87,4 +89,5 @@ class ChatFragment : Fragment() {
             }
         }
     }
+
 }

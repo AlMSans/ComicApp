@@ -1,4 +1,4 @@
-package com.example.proyectofinalcurso.data   // usa tu paquete raíz + .data
+package com.example.proyectofinalcurso.data
 
 import com.example.proyectofinalcurso.Comic
 import com.google.firebase.firestore.DocumentSnapshot

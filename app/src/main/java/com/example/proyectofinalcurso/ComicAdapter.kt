@@ -15,8 +15,11 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFavorites: Boolean) :
-    RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
+class ComicAdapter(
+    private var comicsList: MutableList<Comic>,
+    private val isFavorites: Boolean,
+    private val onComicClick: (Comic) -> Unit
+) : RecyclerView.Adapter<ComicAdapter.ComicViewHolder>() {
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -44,7 +47,7 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
             .error(R.drawable.hb3)
             .into(holder.comicImageView)
 
-        // Hacer visible el botón de eliminar siempre
+        // Mostrar botones según contexto
         holder.deleteButton.visibility = View.VISIBLE
         holder.deleteButton.setOnClickListener {
             if (isFavorites) {
@@ -54,7 +57,6 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
             }
         }
 
-        // Hacer visible el botón de editar solo si no es favoritos
         if (!isFavorites) {
             holder.editButton.visibility = View.VISIBLE
             holder.editButton.setOnClickListener {
@@ -63,6 +65,20 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
         } else {
             holder.editButton.visibility = View.GONE
         }
+
+        // Click en el cómic solo si es de favoritos
+        if (isFavorites) {
+            holder.itemView.setOnClickListener {
+                onComicClick(comic)
+            }
+        }
+    }
+
+    override fun getItemCount(): Int = comicsList.size
+
+    fun updateData(newComicsList: List<Comic>) {
+        comicsList = newComicsList.toMutableList()
+        notifyDataSetChanged()
     }
 
     private fun editComic(comic: Comic, context: Context) {
@@ -74,13 +90,6 @@ class ComicAdapter(private var comicsList: MutableList<Comic>, private val isFav
             .replace(R.id.fragment_container, editComicFragment)
             .addToBackStack(null)
             .commit()
-    }
-
-    override fun getItemCount(): Int = comicsList.size
-
-    fun updateData(newComicsList: List<Comic>) {
-        comicsList = newComicsList.toMutableList()
-        notifyDataSetChanged()
     }
 
     private fun deleteFavoriteComic(comicId: String) {

@@ -2,18 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/bc3">
+    android:padding="50dp"
+    android:background="@drawable/bc3"
+    tools:context=".ProfileFragment">
 
-    <!-- Contenedor con sombra sin bordes redondeados -->
+    <!-- Contenedor con sombra y bordes redondeados -->
     <androidx.cardview.widget.CardView
         android:id="@+id/profileCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="6dp"
+        app:cardElevation="8dp"
         android:layout_margin="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,76 +30,104 @@
 
             <!-- Imagen de perfil -->
             <ImageView
-                android:id="@+id/logoImageView"
+                android:id="@+id/profileImageView"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:src="@drawable/cp2"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="16dp"
+                android:layout_gravity="center" />
 
             <!-- Nombre -->
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nombre:"
-                android:textSize="16sp"
+                android:text="Nombre"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:paddingVertical="8dp" />
+                android:textColor="@android:color/black"
+                android:paddingBottom="15dp"/>
 
             <!-- Apellido -->
             <TextView
                 android:id="@+id/surnameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Apellido:"
+                android:text="Apellido"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingVertical="8dp" />
+                android:textColor="@android:color/black"
+                android:paddingBottom="15dp"/>
 
             <!-- Dirección -->
             <TextView
                 android:id="@+id/addressTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dirección:"
+                android:text="Dirección"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingVertical="8dp" />
+                android:textColor="@android:color/black"
+                android:paddingBottom="15dp"/>
 
             <!-- Correo -->
             <TextView
                 android:id="@+id/emailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Correo:"
+                android:text="Correo"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingVertical="8dp" />
+                android:textColor="@android:color/black"
+                android:paddingBottom="15dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Botón Cerrar sesión -->
-    <Button
-        android:id="@+id/logoutButton"
+    <!-- Botón Editar perfil con MaterialButton -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/editButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
+        android:text="Editar perfil"
+        android:layout_marginTop="50dp"
         android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/profileCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        style="@style/Widget.MaterialComponents.Button"
+        app:cornerRadius="8dp"
+        app:iconPadding="8dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 
-    <!-- Botón Volver -->
-    <Button
+    <!-- Botón Volver con MaterialButton -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/backButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Volver"
-        android:padding="12dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/logoutButton"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/editButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.MaterialComponents.Button"
+        app:cornerRadius="8dp"
+        app:iconPadding="8dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 
+    <!-- Botón Cerrar sesión con MaterialButton -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logoutButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cerrar sesión"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/backButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.MaterialComponents.Button"
+        app:cornerRadius="8dp"
+        app:iconPadding="8dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

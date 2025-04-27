@@ -97,13 +97,16 @@
             android:id="@+id/btnEditComic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Editar" />
+            android:text="Editar"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/btnDeleteComic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Eliminar"
+            android:backgroundTint="@android:color/holo_blue_dark"
             android:textColor="@android:color/holo_red_dark"
             android:layout_marginStart="8dp"/>
     </LinearLayout>

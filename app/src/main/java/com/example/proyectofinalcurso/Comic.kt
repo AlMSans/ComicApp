@@ -5,11 +5,11 @@ import android.os.Parcelable
 
 
 data class Comic(
-    val id: String = "",
+    var id: String = "",
     val title: String = "",
     val author: String = "",
     val genre: String = "",
-    val price: Float = 0f,
+    var price: Float = 0f,
     val condition: String = "",
     val location: String = "",
     val userId: String = "",

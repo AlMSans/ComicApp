@@ -82,10 +82,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun abrirDetallesComic(comic: Comic) {
-
-        // Creamos la lista de imágenes (puede tener 1 o varias)
-        val urls = ArrayList(comic.imageUrls)          // field nuevo
-        if (urls.isEmpty() && comic.imageUrl != null)  // compat. con modelo viejo
+        val urls = ArrayList(comic.imageUrls)
+        if (urls.isEmpty() && comic.imageUrl != null)
             urls.add(comic.imageUrl)
 
         val fragment = ComicDetailFragment.newInstance(
@@ -96,7 +94,7 @@ class HomeFragment : Fragment() {
             location  = comic.location,
             condition = comic.condition,
             price     = comic.price,
-            imageUrls = urls,          //  ←  ahora enviamos la lista
+            imageUrls = urls,
             userId    = comic.userId
         )
 

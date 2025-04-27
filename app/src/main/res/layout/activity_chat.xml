@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Escribe un mensaje"
+        android:textColorHint="@color/white"
         android:padding="10dp"/>
 
     <!-- Botón para enviar el mensaje -->
@@ -26,6 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enviar"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:layout_marginTop="10dp" />
 
     <!-- Botón para volver a ChatFragment -->
@@ -34,6 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Volver"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:layout_marginTop="10dp" />
 
 </LinearLayout>

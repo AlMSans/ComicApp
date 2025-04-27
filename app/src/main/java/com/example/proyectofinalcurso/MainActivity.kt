@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
@@ -14,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var registerButton: Button
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
         registerButton = findViewById(R.id.registerButton)
 
-
+        // Acción para el botón de login
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
@@ -44,13 +44,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Acción para el botón de registro
         registerButton.setOnClickListener {
-            // Simplemente redirigimos al usuario a la pantalla de completar perfil
+            // Redirige a la actividad de completar perfil
             goToCompleteProfile()
         }
-
     }
 
+    // Método para iniciar sesión
     private fun signInWithEmailAndPassword(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -63,10 +64,11 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+
     private fun goToCompleteProfile() {
         val intent = Intent(this, CompleteProfileActivity::class.java)
         startActivity(intent)
-        finish()
+        finish()  // Opcional, si quieres cerrar MainActivity
     }
 
 
@@ -76,7 +78,9 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
+

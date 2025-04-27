@@ -70,7 +70,9 @@
         android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subir Imagen" />
+        android:text="Subir Imagen"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 
     <!-- ImageView para mostrar la imagen del cómic -->
     <ImageView
@@ -87,5 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Guardar Cómic"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 </LinearLayout>

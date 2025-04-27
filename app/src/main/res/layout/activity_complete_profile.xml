@@ -11,8 +11,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Completa tu perfil"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Imagen de perfil -->
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/hb1"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Botón para seleccionar imagen -->
+    <Button
+        android:id="@+id/selectImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cambiar imagen"
+        android:layout_gravity="center"
         android:layout_marginBottom="24dp" />
 
     <EditText
@@ -20,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nombre"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/white"
         android:inputType="textPersonName"
         android:layout_marginBottom="16dp" />
 
@@ -28,6 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Apellido"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/white"
         android:inputType="textPersonName"
         android:layout_marginBottom="16dp" />
 
@@ -36,6 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Dirección"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/white"
         android:inputType="textPostalAddress"
         android:layout_marginBottom="16dp" />
 
@@ -44,17 +69,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:textColorHint="@color/gray"
+        android:textColor="@color/white"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:focusable="false"
+        android:clickable="false" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray"
         android:inputType="textPassword"
         android:layout_marginBottom="24dp" />
 
+    <!-- Botón de Guardar -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
@@ -63,4 +95,16 @@
         android:backgroundTint="@android:color/holo_blue_dark"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
+
+    <!-- Botón de Volver -->
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver sin guardar"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        />
 </LinearLayout>
