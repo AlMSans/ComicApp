@@ -13,7 +13,7 @@ class ChatAdapter(private val messages: List<ChatMessage>, private val currentUs
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textMessage: TextView = itemView.findViewById(R.id.textMessage)
-        val profileImageView: ImageView = itemView.findViewById(R.id.profileImageView)
+
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -30,15 +30,7 @@ class ChatAdapter(private val messages: List<ChatMessage>, private val currentUs
         val message = messages[position]
         holder.textMessage.text = message.mensaje
 
-        // Cargar la imagen de perfil con Glide
-        if (!message.senderProfileImageUrl.isNullOrEmpty()) {
-            Glide.with(holder.itemView.context)
-                .load(message.senderProfileImageUrl)
-                .placeholder(R.drawable.hb1) // Imagen por defecto si no hay URL
-                .into(holder.profileImageView)
-        } else {
-            holder.profileImageView.setImageResource(R.drawable.hb2)
-        }
+
     }
 
     override fun getItemCount(): Int = messages.size

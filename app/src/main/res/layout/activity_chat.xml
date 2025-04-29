@@ -3,7 +3,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="40dp">
+    android:padding="16dp">
+
+    <!-- Contenedor para imagen y nombre del usuario (alineados a la izquierda) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:paddingBottom="16dp">
+
+        <!-- Imagen de perfil del usuario -->
+        <ImageView
+            android:id="@+id/imageViewProfile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/hb1"
+        android:layout_marginEnd="10dp" />
+
+        <!-- Nombre del usuario -->
+        <TextView
+            android:id="@+id/textViewUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del Usuario"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:gravity="center_vertical" />
+
+    </LinearLayout>
 
     <!-- RecyclerView para los mensajes -->
     <androidx.recyclerview.widget.RecyclerView

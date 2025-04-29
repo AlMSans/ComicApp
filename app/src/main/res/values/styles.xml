@@ -34,4 +34,13 @@
         <item name="labelVisibilityMode">labeled</item>
     </style>
 
+    <style name="CircularImageStyle">
+        <item name="shapeAppearanceOverlay">@style/CircularShape</item>
+    </style>
+
+    <style name="CircularShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

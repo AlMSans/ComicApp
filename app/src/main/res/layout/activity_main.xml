@@ -8,8 +8,8 @@
     <!-- Contenedor para los fragmentos -->
     <FrameLayout
         android:id="@+id/fragment_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <!-- Resto de la vista -->
     <ScrollView
@@ -23,59 +23,79 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- Logo -->
+            <!-- Logo con más espacio -->
             <ImageView
                 android:id="@+id/logoImageView"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:src="@drawable/cp2"
-                android:layout_marginBottom="32dp" />
+                android:layout_marginBottom="40dp" />
 
-            <!-- CardView contenedor del formulario -->
+            <!-- CardView con bordes más suaves y sombra sutil -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="24dp"
-                android:padding="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp">
+                android:padding="32dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <!-- Campo de correo -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Correo electrónico"
-                        app:startIconDrawable="@drawable/ic_email">
+                        android:textColorHint="@color/gray"
+                        app:startIconDrawable="@drawable/ic_email"
+                        app:startIconTint="@android:color/darker_gray"
+                    app:boxBackgroundColor="@android:color/white"
+                    app:boxStrokeColor="@android:color/darker_gray"
+                    app:boxStrokeWidth="2dp"
+                    android:layout_marginTop="24dp">    <!-- Ajustar margen según sea necesario -->
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/emailEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textEmailAddress" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Campo de contraseña -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Contraseña"
-                        app:startIconDrawable="@drawable/ic_lock"
-                        android:layout_marginTop="16dp">
+                        android:inputType="textEmailAddress"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/gray"
+                    android:importantForAccessibility="yes" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/passwordEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textPassword" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- Campo de contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contraseña"
+                    android:textColorHint="@color/gray"
+                    app:startIconDrawable="@drawable/ic_lock"
+                    app:startIconTint="@android:color/darker_gray"
+                app:boxBackgroundColor="@android:color/white"
+                app:boxStrokeColor="@android:color/darker_gray"
+                app:boxStrokeWidth="2dp"
+                android:layout_marginTop="16dp">
 
-                    <!-- Botón iniciar sesión -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/passwordEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/gray"
+                    android:importantForAccessibility="yes" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Botón iniciar sesión -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/loginButton"
                         android:layout_width="match_parent"
@@ -83,17 +103,23 @@
                         android:text="Iniciar sesión"
                         android:backgroundTint="@android:color/holo_blue_dark"
                         android:textColor="@android:color/white"
-                        android:layout_marginTop="24dp" />
+                        android:layout_marginTop="24dp"
 
-                    <!-- Botón de registro -->
+
+                        app:cornerRadius="16dp"/>
+
+                    <!-- Botón de registro  -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/registerButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Registrarse"
-                        android:backgroundTint="@android:color/holo_blue_dark"
+                        android:backgroundTint="@android:color/holo_green_dark"
                         android:textColor="@android:color/white"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="8dp"
+
+
+                        app:cornerRadius="16dp"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

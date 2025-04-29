@@ -3,9 +3,12 @@ package com.example.proyectofinalcurso
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -17,6 +20,9 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var buttonSend: Button
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var messageList: MutableList<ChatMessage>
+
+    private lateinit var imageViewProfile: ImageView
+    private lateinit var textViewUserName: TextView
 
     private val db = FirebaseFirestore.getInstance()
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
@@ -32,6 +38,8 @@ class ChatActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewChat)
         editTextMessage = findViewById(R.id.editTextMessage)
         buttonSend = findViewById(R.id.buttonSend)
+        imageViewProfile = findViewById(R.id.imageViewProfile)
+        textViewUserName = findViewById(R.id.textViewUserName)
 
         messageList = mutableListOf()
         chatAdapter = ChatAdapter(messageList, currentUserId)
@@ -52,6 +60,9 @@ class ChatActivity : AppCompatActivity() {
         buttonBack.setOnClickListener {
             onBackPressed() // Vuelve al fragmento anterior
         }
+
+        // Cargar información del usuario receptor
+        loadReceiverInfo()
     }
 
     private fun sendMessage(text: String) {
@@ -88,5 +99,24 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
     }
-}
 
+    private fun loadReceiverInfo() {
+        db.collection("usuarios").document(receiverId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val userName = document.getString("nombre") ?: "Nombre desconocido"
+                    val profileImageUrl = document.getString("profileImageUrl") ?: ""
+
+                    // Establecer el nombre del receptor
+                    textViewUserName.text = userName
+
+                    // Cargar la imagen de perfil con Glide
+                    Glide.with(this)
+                        .load(profileImageUrl)
+                        .placeholder(R.drawable.hb1)  // Imagen por defecto mientras carga
+                        .into(imageViewProfile)
+                }
+            }
+    }
+}

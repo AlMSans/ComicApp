@@ -71,7 +71,7 @@ class ProfileFragment : Fragment() {
                         emailTextView.text = "Correo: ${document.getString("email")}"
 
                         // Obtener la URL de la imagen de perfil desde Firebase Storage
-                        val imageUrl = document.getString("imagenPerfil")
+                        val imageUrl = document.getString("profileImageUrl")
                         if (imageUrl != null && imageUrl.isNotEmpty()) {
                             Glide.with(requireContext())
                                 .load(imageUrl)
@@ -96,10 +96,10 @@ class ProfileFragment : Fragment() {
                 }
         }
 
-        // Acción de editar perfil, se abre CompleteProfileActivity
+        // Acción de editar perfil, se abre EditProfileActivity
         editButton.setOnClickListener {
             Log.d("ProfileFragment", "Botón de editar perfil presionado")  // Log de prueba
-            val intent = Intent(requireContext(), CompleteProfileActivity::class.java)
+            val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
 

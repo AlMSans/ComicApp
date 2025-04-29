@@ -4,19 +4,36 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp">
+    android:padding="40dp"
+    >
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Completa tu perfil"
+        android:text="Edita tu perfil"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp" />
 
+    <!-- Imagen de perfil -->
+    <ImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/hb1"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Botón para seleccionar imagen -->
+    <Button
+        android:id="@+id/selectImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cambiar imagen"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp" />
 
     <EditText
         android:id="@+id/nameEditText"
