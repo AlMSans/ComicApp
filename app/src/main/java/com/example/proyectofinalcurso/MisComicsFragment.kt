@@ -28,6 +28,16 @@ class MisComicsFragment : Fragment() {
         comicAdapter = ComicAdapter(comicsList, isFavorites = false) { }
         recyclerView.adapter = comicAdapter
 
+        // Botón para añadir cómic
+        val btnAddComic = view.findViewById<View>(R.id.btnAddComic)
+        btnAddComic.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, AddComicFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+
         cargarMisComics()
 
         return view

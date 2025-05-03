@@ -63,6 +63,14 @@ class ChatActivity : AppCompatActivity() {
 
         // Cargar información del usuario receptor
         loadReceiverInfo()
+
+        imageViewProfile.setOnClickListener {
+            val fragment = UserDetailFragment.newInstance(receiverId)
+            supportFragmentManager.beginTransaction()
+                .replace(android.R.id.content, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun sendMessage(text: String) {

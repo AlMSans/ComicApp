@@ -3,7 +3,6 @@ package com.example.proyectofinalcurso
 import android.os.Parcel
 import android.os.Parcelable
 
-
 data class Comic(
     var id: String = "",
     val title: String = "",
@@ -14,8 +13,7 @@ data class Comic(
     val location: String = "",
     val userId: String = "",
     var imageUrls: List<String> = emptyList(),
-
-    /** 👴🏻 Compatibilidad con documentos antiguos */
+    var rating: Float = 0f,
     @Deprecated("Usa imageUrls", ReplaceWith("imageUrls"))
     var imageUrl: String? = null
 ) : Parcelable {
@@ -23,18 +21,19 @@ data class Comic(
     /* ----  Parcelable  ---- */
 
     private constructor(parcel: Parcel) : this(
-        id        = parcel.readString() ?: "",
-        title     = parcel.readString() ?: "",
-        author    = parcel.readString() ?: "",
-        genre     = parcel.readString() ?: "",
-        price     = parcel.readFloat(),
+        id = parcel.readString() ?: "",
+        title = parcel.readString() ?: "",
+        author = parcel.readString() ?: "",
+        genre = parcel.readString() ?: "",
+        price = parcel.readFloat(),
         condition = parcel.readString() ?: "",
-        location  = parcel.readString() ?: "",
-        userId    = parcel.readString() ?: "",
+        location = parcel.readString() ?: "",
+        userId = parcel.readString() ?: "",
         imageUrls = mutableListOf<String>().apply {
             parcel.readStringList(this)
         },
-        imageUrl  = parcel.readString()
+        rating = parcel.readFloat(),
+        imageUrl = parcel.readString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -47,6 +46,7 @@ data class Comic(
         parcel.writeString(location)
         parcel.writeString(userId)
         parcel.writeStringList(imageUrls)
+        parcel.writeFloat(rating) // Escribir la puntuación
         parcel.writeString(imageUrl)
     }
 

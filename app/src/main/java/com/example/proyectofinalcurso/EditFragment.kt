@@ -27,6 +27,7 @@ class EditFragment : Fragment() {
     private lateinit var ivComicImage: ImageView
     private lateinit var btnUploadImage: Button
     private lateinit var btnSaveComic: Button
+    private lateinit var ratingBar: RatingBar  // Añadido el RatingBar
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -56,16 +57,18 @@ class EditFragment : Fragment() {
         ivComicImage = view.findViewById(R.id.ivComicImage)
         btnUploadImage = view.findViewById(R.id.btnUploadImage)
         btnSaveComic = view.findViewById(R.id.btnSaveComic)
+        ratingBar = view.findViewById(R.id.comicRatingBar)  // Inicialización del RatingBar
 
         // Rellenar los campos con los datos del cómic
         etTitle.setText(comic.title)
         etAuthor.setText(comic.author)
         etLocation.setText(comic.location)
         etPrice.setText(comic.price.toString())
+        ratingBar.rating = comic.rating  // Asignar la puntuación previamente guardada
 
         // Usar Glide para cargar la primera imagen del cómic
         Glide.with(this)
-            .load(comic.imageUrl) // Si el cómic tiene una URL de imagen, la carga
+            .load(comic.imageUrls) // Si el cómic tiene una URL de imagen, la carga
             .into(ivComicImage)
 
         // Configurar el spinner de condición y género
@@ -121,9 +124,7 @@ class EditFragment : Fragment() {
                     }
                 } else {
                     // Solo seleccionaron una imagen
-                    it.data?.let { uri ->
-                        imageUris.add(uri)
-                    }
+                    it.data?.let { uri -> imageUris.add(uri) }
                 }
             }
 
@@ -157,7 +158,8 @@ class EditFragment : Fragment() {
             condition = condition,
             location = location,
             userId = user?.uid ?: "",
-            imageUrls = imageUris.map { it.toString() } // Convertir las URIs en Strings
+            imageUrls = if (imageUris.isNotEmpty()) imageUris.map { it.toString() } else comic.imageUrls,
+            rating = ratingBar.rating  // Guardar la puntuación del cómic
         )
 
         if (imageUris.isNotEmpty()) {

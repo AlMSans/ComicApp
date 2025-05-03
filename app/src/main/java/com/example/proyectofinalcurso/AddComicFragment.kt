@@ -7,11 +7,9 @@ import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageMetadata
 import java.util.*
 
@@ -27,6 +25,7 @@ class AddComicFragment : Fragment() {
     private lateinit var ivComicImage: ImageView
     private lateinit var btnSaveComic: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var ratingBar: RatingBar  // Añadido para el RatingBar
 
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
@@ -68,6 +67,7 @@ class AddComicFragment : Fragment() {
         ivComicImage = view.findViewById(R.id.ivComicImage)
         btnSaveComic = view.findViewById(R.id.btnSaveComic)
         progressBar = view.findViewById(R.id.progressBar)
+        ratingBar = view.findViewById(R.id.comicRatingBar)  // Vinculado el RatingBar
 
         setupSpinners()
 
@@ -95,6 +95,7 @@ class AddComicFragment : Fragment() {
         val condition = spinnerComicCondition.selectedItem.toString()
         val priceString = etComicPrice.text.toString().trim()
         val genre = spinnerComicGenre.selectedItem.toString()
+        val rating = ratingBar.rating  // Obteniendo la puntuación del RatingBar
 
         if (title.isEmpty() || author.isEmpty() || location.isEmpty() ||
             condition == "Selecciona Estado" || priceString.isEmpty() || genre == "Selecciona Género") {
@@ -152,6 +153,7 @@ class AddComicFragment : Fragment() {
                                     "condition" to condition,
                                     "price" to price,
                                     "genre" to genre,
+                                    "rating" to rating,  // Añadido la puntuación
                                     "imageUrls" to imageUrls,
                                     "userId" to userId,
                                     "createdAt" to com.google.firebase.Timestamp.now()
@@ -177,6 +179,7 @@ class AddComicFragment : Fragment() {
                 "condition" to condition,
                 "price" to price,
                 "genre" to genre,
+                "rating" to rating,  // Añadido la puntuación
                 "userId" to userId,
                 "createdAt" to com.google.firebase.Timestamp.now()
             )

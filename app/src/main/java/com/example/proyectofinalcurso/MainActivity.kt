@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     private fun goToCompleteProfile() {
         val intent = Intent(this, CompleteProfileActivity::class.java)
         startActivity(intent)
-        finish()  // Opcional, si quieres cerrar MainActivity
+        finish()  
     }
 
 

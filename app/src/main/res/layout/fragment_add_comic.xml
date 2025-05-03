@@ -56,6 +56,32 @@
                 android:layout_height="wrap_content"
                 android:hint="Precio"
                 android:inputType="numberDecimal" />
+            <!-- RatingBar para la puntuación -->
+            <TextView
+                android:id="@+id/ratingLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puntuación"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <RatingBar
+                android:id="@+id/comicRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="0"
+                app:layout_constraintTop_toBottomOf="@id/ratingLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:progressTint="@color/star_filled_color"
+                android:secondaryProgressTint="@color/star_half_filled_color"
+                android:backgroundTint="@color/star_empty_color"/>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -64,7 +90,10 @@
         android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Subir Imagen" />
+        android:text="Subir Imagen"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        />
 
     <!-- Imagen del cómic seleccionada -->
     <ImageView
@@ -91,6 +120,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Guardar Cómic"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:layout_marginTop="16dp" />
 
     <!-- Contenedor para el Fragment -->

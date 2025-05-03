@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
@@ -61,6 +58,7 @@ class ComicDetailFragment : Fragment() {
         val favBtn: Button          = findViewById(R.id.favoriteButton)
         val contactBtn: Button      = findViewById(R.id.btnContactar)
         val pager: ViewPager2       = findViewById(R.id.viewPagerImages)
+        val ratingBar: RatingBar    = findViewById(R.id.ratingBar)
 
         /* ----- argumentos ----- */
         val args      = requireArguments()
@@ -82,6 +80,23 @@ class ComicDetailFragment : Fragment() {
         /* ----- ViewPager imágenes ----- */
         pager.adapter = ImagePagerAdapter(images)
 
+        /* ----- Rating de usuario ----- */
+        ratingBar.stepSize = 0.5f
+        ratingBar.numStars = 5
+
+        // Obtener la puntuación del cómic del usuario que lo subió (si existe)
+        FirebaseFirestore.getInstance()
+            .collection("comics")
+            .document(comicId)
+            .get()
+            .addOnSuccessListener { comic ->
+                val rating = comic.getDouble("rating") ?: 0.0
+                ratingBar.rating = rating.toFloat() // Mostrar la puntuación del cómic
+                ratingBar.invalidate() // Forzar refresco visual
+            }
+            .addOnFailureListener {
+                Log.e("RatingError", "Error cargando rating", it)
+            }
 
         /* ----- cargar nombre del vendedor ----- */
         if (userId.isNotEmpty()) {
@@ -110,7 +125,7 @@ class ComicDetailFragment : Fragment() {
                     mapOf(
                         "comicId"  to comicId,
                         "title"    to args.getString("title"),
-                        "imageUrl" to images.firstOrNull()      // para card favorito
+                        "imageUrl" to images.firstOrNull()
                     )
                 ).addOnSuccessListener {
                     Toast.makeText(context, "Cómic guardado como favorito", Toast.LENGTH_SHORT).show()

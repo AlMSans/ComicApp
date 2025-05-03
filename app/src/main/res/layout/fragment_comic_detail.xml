@@ -15,8 +15,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="3:4"/>
-
+        app:layout_constraintDimensionRatio="3:4"
+        android:layout_marginBottom="16dp"/>
 
     <!-- ===== Contenido desplazable ===== -->
     <androidx.core.widget.NestedScrollView
@@ -86,6 +86,19 @@
                         android:text="Precio"
                         android:textColor="@android:color/holo_green_dark"
                         android:layout_marginBottom="8dp"/>
+
+                    <!-- RatingBar -->
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:rating="0"
+                        android:layout_marginTop="8dp"
+                        android:isIndicator="true"
+                        android:progressTint="@color/star_filled_color"
+                        android:secondaryProgressTint="@color/star_half_filled_color"
+                        android:backgroundTint="@color/star_empty_color"/>
 
                     <TextView android:id="@+id/detailUserName"
                         android:layout_width="wrap_content"

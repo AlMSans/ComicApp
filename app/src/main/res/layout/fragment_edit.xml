@@ -7,7 +7,7 @@
     android:padding="16dp"
     android:background="@drawable/bc3">
 
-    <!-- CardView para agrupar los campos principales del cómic -->
+    <!-- CardView para los campos del cómic -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +19,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Campo para el título del cómic -->
             <EditText
                 android:id="@+id/etComicTitle"
                 android:layout_width="match_parent"
@@ -27,7 +26,6 @@
                 android:hint="Título del Cómic"
                 android:inputType="text" />
 
-            <!-- Campo para el autor -->
             <EditText
                 android:id="@+id/etComicAuthor"
                 android:layout_width="match_parent"
@@ -35,7 +33,6 @@
                 android:hint="Autor"
                 android:inputType="text" />
 
-            <!-- Campo de localización -->
             <EditText
                 android:id="@+id/etComicLocation"
                 android:layout_width="match_parent"
@@ -43,38 +40,62 @@
                 android:hint="Localización"
                 android:inputType="text" />
 
-            <!-- Spinner de condición -->
             <Spinner
                 android:id="@+id/spinnerComicCondition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <!-- Spinner de género -->
             <Spinner
                 android:id="@+id/spinnerComicGenre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <!-- Campo de precio -->
             <EditText
                 android:id="@+id/etComicPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Precio"
                 android:inputType="numberDecimal" />
+            <!-- RatingBar para la puntuación -->
+            <TextView
+                android:id="@+id/ratingLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Puntuación"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <RatingBar
+                android:id="@+id/comicRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="0"
+                app:layout_constraintTop_toBottomOf="@id/ratingLabel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:progressTint="@color/star_filled_color"
+                android:secondaryProgressTint="@color/star_half_filled_color"
+                android:backgroundTint="@color/star_empty_color"/>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Botón para subir la imagen -->
+    <!-- Botón para subir imagen -->
     <Button
         android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Subir Imagen"
         android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        />
 
-    <!-- ImageView para mostrar la imagen del cómic -->
+    <!-- Imagen del cómic seleccionada -->
     <ImageView
         android:id="@+id/ivComicImage"
         android:layout_width="match_parent"
@@ -83,13 +104,31 @@
         android:src="@drawable/hb2"
         android:scaleType="centerCrop" />
 
+    <!-- ProgressBar de carga -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large" />
+
     <!-- Botón para guardar el cómic -->
     <Button
         android:id="@+id/btnSaveComic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Guardar Cómic"
-        android:layout_marginTop="16dp"
         android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp" />
+
+    <!-- Contenedor para el Fragment -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1" />
 </LinearLayout>
