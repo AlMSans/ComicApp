@@ -22,7 +22,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="493dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewComics"
@@ -30,5 +30,15 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <Button
+        android:id="@+id/btnVerSubastas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ver Subastas"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:layout_margin="16dp"/>
+
 
 </LinearLayout>

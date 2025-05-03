@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.proyectofinalcurso.databinding.FragmentSubastasBinding
+import com.example.proyectofinalcurso.subastas.MisSubastasFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 

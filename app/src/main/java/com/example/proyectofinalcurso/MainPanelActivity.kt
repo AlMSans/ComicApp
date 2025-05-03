@@ -29,6 +29,7 @@ class MainPanelActivity : AppCompatActivity() {
                 R.id.nav_profile -> loadFragment(ProfileFragment()) // Fragmento de Perfil
                 R.id.nav_mis_comics->loadFragment(ComicsFragment())//Fragmento de los comics
                 R.id.nav_messages -> loadFragment(ChatFragment()) // Fragmento de Mensajes
+
             }
             true
         }

@@ -32,6 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cambiar imagen"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
         android:layout_gravity="center"
         android:layout_marginBottom="24dp" />
 

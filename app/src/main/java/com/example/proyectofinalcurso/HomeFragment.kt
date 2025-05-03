@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,15 @@ class HomeFragment : Fragment() {
             lastDocumentSnapshot = null
             loadComics()
         }
+
+        findViewById<Button>(R.id.btnVerSubastas).setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SubastasFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+
 
         configureFirestoreCache()
         loadComics()

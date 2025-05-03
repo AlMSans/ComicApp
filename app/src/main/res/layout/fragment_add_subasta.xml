@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="50dp"
+    android:background="@drawable/bc3">
+
+    <!-- CardView para agrupar todos los EditText -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp">
+
+        <!-- LinearLayout para organizar los EditText -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <!-- Título de la subasta -->
+            <EditText
+                android:id="@+id/etTituloSubasta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Título de la subasta"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Descripción de la subasta -->
+            <EditText
+                android:id="@+id/etDescripcionSubasta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Descripción"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Precio de la subasta -->
+            <EditText
+                android:id="@+id/etPrecioSubasta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Precio inicial"
+                android:inputType="numberDecimal"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- RecyclerView para los cómics del usuario -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginBottom="16dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewComicsUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <!-- Botón de guardar -->
+    <Button
+        android:id="@+id/btnGuardarSubasta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar Subasta" />
+
+</LinearLayout>

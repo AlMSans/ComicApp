@@ -1,59 +1,88 @@
-package com.example.proyectofinalcurso
+package com.example.proyectofinalcurso.subastas
 
 import android.os.Bundle
+import android.util.Log
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.proyectofinalcurso.AddSubastaFragment
+import com.example.proyectofinalcurso.R
+import com.example.proyectofinalcurso.Subasta
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MisSubastasFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MisSubastasFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var subastasAdapter: MisSubastasAdapter
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mis_subastas, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_mis_subastas, container, false).apply {
+
+        recyclerView = findViewById(R.id.recyclerViewMisSubastas)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        subastasAdapter = MisSubastasAdapter(emptyList(), ::onCerrarSubasta, ::onEliminarSubasta)
+        recyclerView.adapter = subastasAdapter
+
+        findViewById<FloatingActionButton>(R.id.btnNuevaSubasta).setOnClickListener {
+            // Crear una instancia del AddSubastaFragment
+            val addSubastaFragment = AddSubastaFragment()
+
+            // Realizar la transacción para reemplazar el fragmento actual con AddSubastaFragment
+            val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.fragment_container, addSubastaFragment)
+            fragmentTransaction.addToBackStack(null) // Si quieres poder navegar hacia atrás
+            fragmentTransaction.commit()
+
+            // Puedes agregar un mensaje opcional para confirmar la acción
+            Toast.makeText(context, "Crear nueva subasta", Toast.LENGTH_SHORT).show()
+        }
+
+
+        cargarMisSubastas()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MisSubastasFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MisSubastasFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun cargarMisSubastas() {
+        val userId = auth.currentUser?.uid ?: return
+
+        db.collection("subastas")
+            .whereEqualTo("propietarioId", userId)
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    Log.e("MisSubastasFragment", "Error al cargar subastas", error)
+                    return@addSnapshotListener
                 }
+
+                val lista = snapshots?.documents?.mapNotNull { doc ->
+                    doc.toObject(Subasta::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+
+                subastasAdapter.updateData(lista)
             }
     }
+
+    private fun onCerrarSubasta(subasta: Subasta) {
+        db.collection("subastas").document(subasta.id)
+            .update("cerrada", true)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Subasta cerrada", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun onEliminarSubasta(subasta: Subasta) {
+        db.collection("subastas").document(subasta.id)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Subasta eliminada", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 }
+
