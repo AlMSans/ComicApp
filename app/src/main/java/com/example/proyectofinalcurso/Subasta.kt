@@ -2,6 +2,7 @@ package com.example.proyectofinalcurso
 
 data class Subasta(
     val id: String = "",
+    val comicId: String = "",
     val titulo: String = "",
     val descripcion: String = "",
     val imagenUrl: String = "",

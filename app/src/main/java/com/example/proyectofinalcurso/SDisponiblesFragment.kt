@@ -29,10 +29,16 @@ class SDisponiblesFragment : Fragment() {
         recyclerViewSubastas.layoutManager = LinearLayoutManager(context)
 
         // Se pasa el método para pujar por una subasta
-        subastaAdapter = SubastaDisponiblesAdapter(subastasList) { subasta ->
-            // Llama al método para pujar por la subasta
-            pujarPorSubasta(subasta)
-        }
+        subastaAdapter = SubastaDisponiblesAdapter(
+            subastasList,
+            onPujarClick = { subasta ->
+                pujarPorSubasta(subasta)
+            },
+            onImageClick = { subasta ->
+                abrirDetallesComicDesdeSubasta(subasta)
+            }
+        )
+
         recyclerViewSubastas.adapter = subastaAdapter
 
         loadSubastas()
@@ -85,6 +91,49 @@ class SDisponiblesFragment : Fragment() {
 
 
     }
+
+    private fun abrirDetallesComicDesdeSubasta(subasta: Subasta) {
+        val comicId = subasta.comicId
+        if (comicId.isBlank()) {
+            Toast.makeText(context, "No se pudo abrir el cómic, ID faltante.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("comics").document(comicId).get()
+            .addOnSuccessListener { document ->
+                val comic = document.toObject(Comic::class.java)
+                if (comic != null) {
+                    val urls = ArrayList(comic.imageUrls)
+                    if (urls.isEmpty() && comic.imageUrl != null) {
+                        urls.add(comic.imageUrl)
+                    }
+
+                    val fragment = ComicDetailFragment.newInstance(
+                        id        = comic.id,
+                        title     = comic.title,
+                        author    = comic.author,
+                        genre     = comic.genre,
+                        location  = comic.location,
+                        condition = comic.condition,
+                        price     = comic.price,
+                        imageUrls = urls,
+                        userId    = comic.userId
+                    )
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    Toast.makeText(context, "No se encontró el cómic", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error al cargar el cómic", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
 
 }

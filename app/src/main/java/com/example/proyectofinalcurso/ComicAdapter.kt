@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -43,6 +44,7 @@ class ComicAdapter(
 
         Glide.with(holder.itemView.context)
             .load(thumbUrl)
+            .transform(RoundedCorners(30))
             .placeholder(R.drawable.hb2)
             .error(R.drawable.hb3)
             .into(holder.comicImageView)

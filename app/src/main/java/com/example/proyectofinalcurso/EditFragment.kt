@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -68,8 +69,12 @@ class EditFragment : Fragment() {
 
         // Usar Glide para cargar la primera imagen del cómic
         Glide.with(this)
-            .load(comic.imageUrls) // Si el cómic tiene una URL de imagen, la carga
-            .into(ivComicImage)
+            .load(comic.imageUrls.firstOrNull() ?: comic.imageUrl) // Si comic.imageUrls no tiene imágenes, usa comic.imageUrl
+            .transform(RoundedCorners(30)) // Aplica bordes redondeados
+            .placeholder(R.drawable.hb2) // Imagen placeholder mientras se carga
+            .error(R.drawable.hb3) // Imagen en caso de error
+            .into(ivComicImage) // Cargar la imagen en el ImageView
+
 
         // Configurar el spinner de condición y género
         val conditions = arrayOf("Nuevo", "Usado", "Deteriorado")
@@ -149,6 +154,7 @@ class EditFragment : Fragment() {
             return
         }
 
+        // Aquí se hace la actualización, asegurándose de no borrar las imágenes si no se seleccionaron nuevas
         val updatedComic = Comic(
             id = comic.id,
             title = title,
@@ -158,22 +164,25 @@ class EditFragment : Fragment() {
             condition = condition,
             location = location,
             userId = user?.uid ?: "",
-            imageUrls = if (imageUris.isNotEmpty()) imageUris.map { it.toString() } else comic.imageUrls,
+            imageUrls = if (imageUris.isNotEmpty()) imageUris.map { it.toString() } else comic.imageUrls, // Si no hay imágenes nuevas, mantiene las viejas
             rating = ratingBar.rating  // Guardar la puntuación del cómic
         )
 
+        // Si hay imágenes nuevas seleccionadas, subirlas a Firebase
         if (imageUris.isNotEmpty()) {
             uploadImagesToFirebase(updatedComic)
         } else {
-            saveComicToFirestore(updatedComic)
+            saveComicToFirestore(updatedComic) // Si no hay nuevas imágenes, solo se actualiza en Firestore
         }
     }
 
-    // Subir múltiples imágenes a Firebase Storage
+
+    // Subir imágenes a Firebase solo si hay imágenes nuevas
     private fun uploadImagesToFirebase(comic: Comic) {
         val imageUrls = mutableListOf<String>()
         val storageRef = storage.reference
 
+        // Subir solo si se seleccionaron imágenes
         imageUris.forEachIndexed { index, uri ->
             val imageRef = storageRef.child("comic_images/${UUID.randomUUID()}.jpg")
             imageRef.putFile(uri)
@@ -182,12 +191,17 @@ class EditFragment : Fragment() {
                         imageUrls.add(downloadUri.toString())
                         if (imageUrls.size == imageUris.size) {
                             comic.imageUrls = imageUrls // Asignar las URLs de todas las imágenes al cómic
-                            saveComicToFirestore(comic)
+                            saveComicToFirestore(comic) // Después de subir todas las imágenes, guardar en Firestore
                         }
                     }
                 }
+                .addOnFailureListener {
+                    // Manejo de errores en la subida
+                    Toast.makeText(context, "Error al subir las imágenes.", Toast.LENGTH_SHORT).show()
+                }
         }
     }
+
 
     // Guardar el cómic actualizado en Firestore
     private fun saveComicToFirestore(comic: Comic) {

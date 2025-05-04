@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 
 class ComicDetailFragment : Fragment() {
 
-    /* ---------- factory ---------- */
     companion object {
         fun newInstance(
             id: String,
@@ -41,13 +41,10 @@ class ComicDetailFragment : Fragment() {
         }
     }
 
-    /* ---------- lifecycle ---------- */
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.fragment_comic_detail, container, false).apply {
 
-        /* ----- UI refs ----- */
         val titleTv: TextView       = findViewById(R.id.detailTitle)
         val authorTv: TextView      = findViewById(R.id.detailAuthor)
         val genreTv: TextView       = findViewById(R.id.detailGenre)
@@ -59,17 +56,15 @@ class ComicDetailFragment : Fragment() {
         val contactBtn: Button      = findViewById(R.id.btnContactar)
         val pager: ViewPager2       = findViewById(R.id.viewPagerImages)
         val ratingBar: RatingBar    = findViewById(R.id.ratingBar)
+        val backBtn: Button         = findViewById(R.id.btnVolver) // Botón Volver
 
-        /* ----- argumentos ----- */
         val args      = requireArguments()
         val comicId   = args.getString("id") ?: ""
         val userId    = args.getString("userId") ?: ""
         val images    = args.getStringArrayList("imageUrls") ?: arrayListOf()
 
-        // retro‑compatibilidad: si images vacío pero hay imageUrl legacy
         args.getString("imageUrl")?.let { if (images.isEmpty()) images.add(it) }
 
-        /* ----- set texts ----- */
         titleTv.text     = args.getString("title")
         authorTv.text    = "Autor: ${args.getString("author")}"
         genreTv.text     = "Género: ${args.getString("genre")}"
@@ -77,28 +72,24 @@ class ComicDetailFragment : Fragment() {
         conditionTv.text = "Estado: ${args.getString("condition")}"
         priceTv.text     = "Precio: €${args.getFloat("price")}"
 
-        /* ----- ViewPager imágenes ----- */
         pager.adapter = ImagePagerAdapter(images)
 
-        /* ----- Rating de usuario ----- */
         ratingBar.stepSize = 0.5f
         ratingBar.numStars = 5
 
-        // Obtener la puntuación del cómic del usuario que lo subió (si existe)
         FirebaseFirestore.getInstance()
             .collection("comics")
             .document(comicId)
             .get()
             .addOnSuccessListener { comic ->
                 val rating = comic.getDouble("rating") ?: 0.0
-                ratingBar.rating = rating.toFloat() // Mostrar la puntuación del cómic
-                ratingBar.invalidate() // Forzar refresco visual
+                ratingBar.rating = rating.toFloat()
+                ratingBar.invalidate()
             }
             .addOnFailureListener {
                 Log.e("RatingError", "Error cargando rating", it)
             }
 
-        /* ----- cargar nombre del vendedor ----- */
         if (userId.isNotEmpty()) {
             FirebaseFirestore.getInstance()
                 .collection("usuarios").document(userId)
@@ -108,14 +99,12 @@ class ComicDetailFragment : Fragment() {
                 }
         }
 
-        /* ----- favoritos ----- */
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) favBtn.visibility = View.GONE else {
             val favRef = FirebaseFirestore.getInstance()
                 .collection("usuarios").document(currentUser.uid)
                 .collection("favorites")
 
-            // si ya es favorito, oculta botón
             favRef.whereEqualTo("comicId", comicId).get().addOnSuccessListener {
                 if (!it.isEmpty) favBtn.visibility = View.GONE
             }
@@ -134,16 +123,18 @@ class ComicDetailFragment : Fragment() {
             }
         }
 
-        /* ----- contactar propietario ----- */
         if (currentUser?.uid != userId) {
             contactBtn.setOnClickListener {
                 startActivity(Intent(requireContext(), ChatActivity::class.java)
                     .putExtra("receiverId", userId))
             }
         } else contactBtn.visibility = View.GONE
-    }
 
-    /* ---------- pager adapter ---------- */
+        // Implementación del botón Volver
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
 
     private inner class ImagePagerAdapter(private val urls: List<String>) :
         RecyclerView.Adapter<ImagePagerAdapter.ImageVH>() {
@@ -164,6 +155,7 @@ class ComicDetailFragment : Fragment() {
         override fun onBindViewHolder(h: ImageVH, pos: Int) {
             Glide.with(h.iv.context)
                 .load(urls[pos])
+                .transform(RoundedCorners(30))
                 .placeholder(R.drawable.hb2)
                 .error(R.drawable.hb3)
                 .into(h.iv)

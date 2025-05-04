@@ -63,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:text="Puntuación"
                 android:textSize="16sp"
-                android:textColor="@android:color/black"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>

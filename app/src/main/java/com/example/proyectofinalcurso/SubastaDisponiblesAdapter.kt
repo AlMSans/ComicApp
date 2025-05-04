@@ -11,7 +11,8 @@ import com.bumptech.glide.Glide
 
 class SubastaDisponiblesAdapter(
     private var subastas: List<Subasta>,
-    private val onPujarClick: (Subasta) -> Unit
+    private val onPujarClick: (Subasta) -> Unit,
+    private val onImageClick: (Subasta) -> Unit
 ) : RecyclerView.Adapter<SubastaDisponiblesAdapter.SubastaViewHolder>() {
 
     inner class SubastaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -40,6 +41,11 @@ class SubastaDisponiblesAdapter(
         } else {
             "Nadie ha pujado todavia"
         }
+
+        holder.imagen.setOnClickListener {
+            onImageClick(subasta)
+        }
+
 
         // Cargar la imagen
         Glide.with(holder.itemView.context)

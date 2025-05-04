@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class ListUsuComics(
     private var comicsList: List<Comic>,
@@ -52,6 +53,7 @@ class ListUsuComics(
 
             Glide.with(itemView.context)
                 .load(thumbUrl)
+                .transform(RoundedCorners(30))
                 .placeholder(R.drawable.hb2)
                 .error(R.drawable.hb3)
                 .into(comicIv)

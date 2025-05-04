@@ -96,9 +96,7 @@ class AddSubastaFragment : Fragment() {
         }
 
         val precioInicial = precio.toDoubleOrNull() ?: 0.0
-
         val imagenUrl = comicSeleccionado?.imageUrls?.firstOrNull() ?: comicSeleccionado?.imageUrl ?: "url_imagen_predeterminada"
-
         val comicId = comicSeleccionado?.id
 
         if (comicId.isNullOrEmpty()) {
@@ -108,34 +106,49 @@ class AddSubastaFragment : Fragment() {
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val propietarioId = currentUser?.uid ?: ""
+        val subastaId = db.collection("subastas").document().id
 
-        val subasta = Subasta(
-            id = comicId,
-            titulo = titulo,
-            descripcion = descripcion,
-            imagenUrl = imagenUrl.toString(),
-            precioInicial = precioInicial,
-            mejorOferta = 0.0,
-            mejorPostor = "",
-            propietarioId = propietarioId,
-            cerrada = false
-        )
-
+        // Verificar si ya existe una subasta activa con este cómic
         db.collection("subastas")
-            .document(comicId)
-            .set(subasta)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Subasta guardada correctamente", Toast.LENGTH_SHORT).show()
+            .whereEqualTo("comicId", comicId)
+            .whereEqualTo("cerrada", false)
+            .get()
+            .addOnSuccessListener { result ->
+                if (!result.isEmpty) {
+                    Toast.makeText(context, "Este cómic ya está en una subasta activa", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
 
-                // Volver a MisSubastasFragment
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, MisSubastasFragment())
-                    .addToBackStack(null)
-                    .commit()
+                val subasta = Subasta(
+                    id = subastaId,
+                    comicId = comicId,
+                    titulo = titulo,
+                    descripcion = descripcion,
+                    imagenUrl = imagenUrl,
+                    precioInicial = precioInicial,
+                    mejorOferta = 0.0,
+                    mejorPostor = "",
+                    nombrePostor = "",
+                    propietarioId = propietarioId,
+                    cerrada = false
+                )
+
+                db.collection("subastas").document(subastaId)
+                    .set(subasta)
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Subasta guardada correctamente", Toast.LENGTH_SHORT).show()
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, MisSubastasFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(context, "Error al guardar la subasta: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
-
             .addOnFailureListener { exception ->
-                Toast.makeText(context, "Error al guardar la subasta: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error al verificar si el cómic ya está en subasta: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

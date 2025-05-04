@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -50,6 +51,7 @@ class UserDetailFragment : Fragment() {
                     val imageUrl = doc.getString("profileImageUrl")
                     Glide.with(this)
                         .load(imageUrl)
+                        .transform(RoundedCorners(30))
                         .placeholder(R.drawable.cp2)
                         .into(profileImageView)
                 }

@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class ChatListAdapter(
     private var users: List<ChatUser>,
@@ -31,6 +32,7 @@ class ChatListAdapter(
         if (!user.profileImageUrl.isNullOrEmpty()) {
             Glide.with(holder.itemView.context)
                 .load(user.profileImageUrl)
+                .transform(RoundedCorners(30))
                 .placeholder(R.drawable.hb1)  // Imagen por defecto
                 .into(holder.profileImageView)
         } else {
