@@ -8,6 +8,7 @@ data class Subasta(
     val precioInicial: Double = 0.0,
     val mejorOferta: Double = 0.0,
     val mejorPostor: String = "",
+    val nombrePostor: String = "",
     val propietarioId: String = "",
     val cerrada: Boolean = false
 )

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.proyectofinalcurso.subastas.MisSubastasFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -96,7 +97,8 @@ class AddSubastaFragment : Fragment() {
 
         val precioInicial = precio.toDoubleOrNull() ?: 0.0
 
-        val imagenUrl = comicSeleccionado?.imageUrls?.firstOrNull() ?: comicSeleccionado?.imageUrl
+        val imagenUrl = comicSeleccionado?.imageUrls?.firstOrNull() ?: comicSeleccionado?.imageUrl ?: "url_imagen_predeterminada"
+
         val comicId = comicSeleccionado?.id
 
         if (comicId.isNullOrEmpty()) {
@@ -104,22 +106,36 @@ class AddSubastaFragment : Fragment() {
             return
         }
 
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val propietarioId = currentUser?.uid ?: ""
+
         val subasta = Subasta(
+            id = comicId,
             titulo = titulo,
             descripcion = descripcion,
+            imagenUrl = imagenUrl.toString(),
             precioInicial = precioInicial,
-            id = comicId,
-            imagenUrl = imagenUrl.toString()
+            mejorOferta = 0.0,
+            mejorPostor = "",
+            propietarioId = propietarioId,
+            cerrada = false
         )
 
         db.collection("subastas")
-            .add(subasta)
+            .document(comicId)
+            .set(subasta)
             .addOnSuccessListener {
                 Toast.makeText(context, "Subasta guardada correctamente", Toast.LENGTH_SHORT).show()
+
+                // Volver a MisSubastasFragment
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, MisSubastasFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
+
             .addOnFailureListener { exception ->
                 Toast.makeText(context, "Error al guardar la subasta: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
 }

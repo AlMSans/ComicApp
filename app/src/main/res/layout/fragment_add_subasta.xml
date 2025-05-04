@@ -69,6 +69,8 @@
         android:id="@+id/btnGuardarSubasta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar Subasta" />
+        android:text="Guardar Subasta"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"/>
 
 </LinearLayout>
