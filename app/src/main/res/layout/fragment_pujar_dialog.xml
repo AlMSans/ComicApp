@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.google.android.material.textfield.TextInputLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvPujarTitulo"
@@ -13,25 +14,30 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="8dp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black" />
 
-    <EditText
-        android:id="@+id/etPujaCantidad"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayoutPuja"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
         android:hint="Introduce tu oferta"
-        android:padding="10dp"
-        android:layout_marginBottom="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:layout_marginBottom="16dp">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPujaCantidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirmarPuja"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirmar Puja"
-        android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"/>
+        android:backgroundTint="@color/common_google_signin_btn_text_light"
+        android:textColor="@android:color/white" />
 
-</LinearLayout>
+</com.google.android.material.textfield.TextInputLayout>

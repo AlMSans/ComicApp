@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="32dp"
-    android:background="@drawable/bc3"
+    android:background="@drawable/bg_gradient"
     tools:context=".UserDetailFragment">
 
     <!-- Contenedor de la tarjeta con bordes redondeados -->
@@ -27,15 +27,12 @@
             android:gravity="center_horizontal"
             android:background="@android:color/white">
 
-            <!-- Contenedor para la imagen circular -->
             <FrameLayout
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginBottom="16dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circular_border"> <!-- El fondo circular -->
+                android:background="@drawable/circular_border">
 
-                <!-- Imagen de perfil -->
                 <ImageView
                     android:id="@+id/profileImageView"
                     android:layout_width="match_parent"
@@ -45,7 +42,6 @@
                     app:shapeAppearanceOverlay="@style/CircularShape"/>
             </FrameLayout>
 
-            <!-- Nombre -->
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="match_parent"
@@ -54,9 +50,9 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp"
+                android:gravity="center" />
 
-            <!-- Apellido -->
             <TextView
                 android:id="@+id/surnameTextView"
                 android:layout_width="match_parent"
@@ -64,9 +60,9 @@
                 android:text="Apellido"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp"
+                android:gravity="center" />
 
-            <!-- Dirección -->
             <TextView
                 android:id="@+id/addressTextView"
                 android:layout_width="match_parent"
@@ -74,9 +70,9 @@
                 android:text="Dirección"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp"
+                android:gravity="center" />
 
-            <!-- Correo -->
             <TextView
                 android:id="@+id/emailTextView"
                 android:layout_width="match_parent"
@@ -84,7 +80,8 @@
                 android:text="Correo"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"
-                android:paddingBottom="12dp"/>
+                android:paddingBottom="12dp"
+                android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

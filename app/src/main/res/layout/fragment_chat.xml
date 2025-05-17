@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="40dp"
-    android:background="@drawable/bc3">
+    android:background="@drawable/bg_gradient">
 
-    <!-- Título de la sección de chat -->
-    <TextView
-        android:layout_width="wrap_content"
+    <!-- Título con MaterialCardView para efecto visual -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTituloChat"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Mis Chats"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:background="#000000"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp"
-        android:layout_gravity="center_horizontal" />
+        android:elevation="4dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mis Chats"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <!-- RecyclerView para la lista de chats -->
+    <!-- RecyclerView para mostrar los chats -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewChats"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="12dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/cardTituloChat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>

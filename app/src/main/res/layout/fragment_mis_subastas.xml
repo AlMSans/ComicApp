@@ -3,7 +3,7 @@
     android:id="@+id/misSubastasLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bc3">
+    android:background="@drawable/bg_gradient">
 
     <!-- AppBarLayout que contiene la barra de herramientas u otros elementos -->
     <androidx.appcompat.widget.Toolbar

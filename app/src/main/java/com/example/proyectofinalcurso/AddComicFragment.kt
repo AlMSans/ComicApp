@@ -188,8 +188,14 @@ class AddComicFragment : Fragment() {
     }
 
     private fun saveComicDataToFirestore(comicData: Map<String, Any>) {
-        db.collection("comics")
-            .add(comicData)
+        val newDocRef = db.collection("comics").document()
+
+
+        // Agrega el ID al mapa de datos
+        val comicWithId = comicData.toMutableMap()
+        comicWithId["id"] = newDocRef.id
+
+        newDocRef.set(comicWithId)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Cómic guardado correctamente", Toast.LENGTH_SHORT).show()
                 requireActivity().onBackPressed()
@@ -198,4 +204,5 @@ class AddComicFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error al guardar el cómic: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

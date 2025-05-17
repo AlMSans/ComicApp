@@ -5,13 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/bc3">
+    android:background="@drawable/bg_gradient">
 
     <!-- CardView para los campos del cómic -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,31 +58,28 @@
                 android:layout_height="wrap_content"
                 android:hint="Precio"
                 android:inputType="numberDecimal" />
-            <!-- RatingBar para la puntuación -->
+
+            <!-- RatingBar -->
             <TextView
                 android:id="@+id/ratingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Puntuación"
                 android:textSize="16sp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_marginTop="12dp"
+                android:layout_gravity="center_horizontal"/>
 
             <RatingBar
                 android:id="@+id/comicRatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:numStars="5"
                 android:stepSize="0.5"
                 android:rating="0"
-                app:layout_constraintTop_toBottomOf="@id/ratingLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:progressTint="@color/star_filled_color"
                 android:secondaryProgressTint="@color/star_half_filled_color"
                 android:backgroundTint="@color/star_empty_color"/>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -89,12 +88,12 @@
         android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Subir Imagen"
         android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"
-        />
+        android:textColor="@android:color/white" />
 
-    <!-- Imagen del cómic seleccionada -->
+    <!-- Imagen seleccionada -->
     <ImageView
         android:id="@+id/ivComicImage"
         android:layout_width="match_parent"
@@ -103,7 +102,7 @@
         android:src="@drawable/hb2"
         android:scaleType="centerCrop" />
 
-    <!-- ProgressBar de carga -->
+    <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -113,7 +112,7 @@
         android:visibility="gone"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large" />
 
-    <!-- Botón para guardar el cómic -->
+    <!-- Botón para guardar -->
     <Button
         android:id="@+id/btnSaveComic"
         android:layout_width="wrap_content"
@@ -121,13 +120,14 @@
         android:text="Guardar Cómic"
         android:backgroundTint="@android:color/holo_blue_dark"
         android:textColor="@android:color/white"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
 
-    <!-- Contenedor para el Fragment -->
+    <!-- Fragment (si se usa más adelante) -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

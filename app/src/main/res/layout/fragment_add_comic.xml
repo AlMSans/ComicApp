@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/bc3">
+    android:background="@drawable/bg_gradient">
 
     <!-- CardView para los campos del cómic -->
     <androidx.cardview.widget.CardView

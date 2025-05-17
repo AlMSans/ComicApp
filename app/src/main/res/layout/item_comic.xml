@@ -106,8 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Eliminar"
-            android:backgroundTint="@android:color/holo_blue_dark"
-            android:textColor="@android:color/holo_red_dark"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="@android:color/white"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 

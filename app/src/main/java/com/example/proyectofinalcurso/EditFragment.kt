@@ -78,7 +78,7 @@ class EditFragment : Fragment() {
 
         // Configurar el spinner de condición y género
         val conditions = arrayOf("Nuevo", "Usado", "Deteriorado")
-        val genres = arrayOf("Acción", "Aventura", "Ciencia Ficción", "Misterio", "Comedia", "Superhéroes", "Policiaco")
+        val genres = arrayOf("Acción", "Aventura", "Ciencia Ficción", "Misterio", "Comedia", "Terror", "Superhéroes", "Policiaco")
 
         val conditionAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, conditions)
         conditionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

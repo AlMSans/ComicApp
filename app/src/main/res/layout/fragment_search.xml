@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="50dp"
-    android:background="@drawable/bc3"
+    android:background="@drawable/bg_gradient"
     tools:context=".SearchFragment">
 
     <!-- Contenedor con sombra sin bordes redondeados -->
